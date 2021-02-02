@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf
  * Custom networking code for VS to allow for compatibility with Fabric and Forge.
  * Handlers registering packets and their handlers, as well as writing packets to bytes and processing packets when they arrive.
  *
- * @param P: The player object class
+ * @param P The player object class
  */
 class VSPacketRegistry<P> {
 
@@ -27,10 +27,10 @@ class VSPacketRegistry<P> {
 
     /**
      * Registers a new packet type
-     * @param clazz: The class of the packet type
-     * @param supplier: A supplier that creates a new empty instance of the packet type. Used when converting bytes to packets.
-     * @param clientHandler: An object that runs the code when this packet is received by the client
-     * @param serverHandler: An object that runs the code when this packet is received by the server
+     * @param clazz The class of the packet type
+     * @param supplier A supplier that creates a new empty instance of the packet type. Used when converting bytes to packets.
+     * @param clientHandler An object that runs the code when this packet is received by the client
+     * @param serverHandler An object that runs the code when this packet is received by the server
      */
     fun <T : IVSPacket> registerVSPacket(
         clazz: Class<T>,

@@ -2,7 +2,7 @@ package org.valkyrienskies.core.networking
 
 /**
  * Sends packets to clients or the server.
- * @param P: The player object class
+ * @param P The player object class
  */
 interface IVSPacketSender<P> {
     fun sendToServer(vsPacket: IVSPacket) {
