@@ -4,7 +4,7 @@ import org.joml.Vector2i
 import org.joml.Vector3ic
 
 /**
- * Allocates chunks in a straight line across the Z axis
+ * Allocates [ChunkClaim]s to be used by [ShipData].
  */
 data class ChunkAllocator(
     private var nextClaimX: Int,
