@@ -13,6 +13,7 @@ repositories {
 
 val gdxVersion = "1.9.11"
 val jacksonVersion = "2.12.1"
+val nettyVersion = "4.1.25.Final"
 
 dependencies {
     // Kotlin
@@ -38,6 +39,9 @@ dependencies {
 
     // Trove for Fast Primitive Collections
     implementation("net.sf.trove4j", "trove4j", "3.0.3")
+
+    // Netty for networking
+    implementation("io.netty", "netty-buffer", nettyVersion)
 
     // Junit 5 for Unit Testing
     testImplementation("org.junit.jupiter:junit-jupiter:5.4.2")
