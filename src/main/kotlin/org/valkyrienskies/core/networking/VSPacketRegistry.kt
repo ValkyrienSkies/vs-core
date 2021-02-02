@@ -19,10 +19,10 @@ class VSPacketRegistry<P> {
     // Maps packet ids to the supplier that creates a new empty version of that packet
     private val idToSupplierMap = HashMap<Int, () -> IVSPacket>()
 
-    // Maps packet ids to the handler that runs them on the client
+    // Maps [IVSPacket] class types to the handler that runs them on the client
     private val classToClientHandlerMap = HashMap<Class<*>, IVSPacketClientHandler>()
 
-    // Maps packet ids to the handler that runs them on the server
+    // Maps [IVSPacket] class types to the handler that runs them on the server
     private val classToServerHandlerMap = HashMap<Class<*>, IVSPacketServerHandler<P>>()
 
     /**
