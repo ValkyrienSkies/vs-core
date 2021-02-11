@@ -3,9 +3,14 @@ package org.valkyrienskies.core.chunk_tracking
 import org.valkyrienskies.core.game.IPlayer
 import org.valkyrienskies.core.game.ShipTransform
 
-interface IShipChunkTracker<P : IPlayer> {
-    fun tick(players: Iterator<P>, removedPlayers: Iterator<P>, shipTransform: ShipTransform)
-    fun getPlayersWatchingChunk(chunkX: Int, chunkZ: Int): Iterator<P>
-    fun getChunkWatchTasks(): Iterator<ChunkWatchTask<P>>
-    fun getChunkUnwatchTasks(): Iterator<ChunkUnwatchTask<P>>
+/**
+ * The [IShipChunkTracker] keeps track of the players that are watching each ship chunk.
+ *
+ * It also determines when players should watch/unwatch ship chunks (see [getChunkWatchTasks] and [getChunkUnwatchTasks]).
+ */
+interface IShipChunkTracker {
+    fun tick(players: Iterator<IPlayer>, removedPlayers: Iterator<IPlayer>, shipTransform: ShipTransform)
+    fun getPlayersWatchingChunk(chunkX: Int, chunkZ: Int): Iterator<IPlayer>
+    fun getChunkWatchTasks(): Iterator<ChunkWatchTask>
+    fun getChunkUnwatchTasks(): Iterator<ChunkUnwatchTask>
 }

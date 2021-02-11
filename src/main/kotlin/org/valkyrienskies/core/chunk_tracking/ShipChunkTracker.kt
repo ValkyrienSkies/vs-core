@@ -7,16 +7,16 @@ import org.joml.Vector3dc
 import org.valkyrienskies.core.game.IPlayer
 import org.valkyrienskies.core.game.ShipTransform
 
-class ShipChunkTracker<P : IPlayer>(
+class ShipChunkTracker(
     private val shipActiveChunksSet: IShipActiveChunksSet,
     private var chunkWatchDistance: Double,
     private var chunkUnwatchDistance: Double
 ) :
-    IShipChunkTracker<P> {
+    IShipChunkTracker {
 
-    private val playersWatchingChunkMap: Long2ObjectMap<Set<P>> = Long2ObjectOpenHashMap()
-    private val chunkWatchTasks: List<ChunkWatchTask<P>> = listOf()
-    private val chunkUnwatchTasks: List<ChunkUnwatchTask<P>> = listOf()
+    private val playersWatchingChunkMap: Long2ObjectMap<Set<IPlayer>> = Long2ObjectOpenHashMap()
+    private val chunkWatchTasks: List<ChunkWatchTask> = listOf()
+    private val chunkUnwatchTasks: List<ChunkUnwatchTask> = listOf()
 
     fun updateChunkWatchDistance(newChunkWatchDistance: Double) {
         chunkWatchDistance = newChunkWatchDistance
@@ -26,9 +26,9 @@ class ShipChunkTracker<P : IPlayer>(
         chunkUnwatchDistance = newChunkUnwatchDistance
     }
 
-    override fun tick(players: Iterator<P>, removedPlayers: Iterator<P>, shipTransform: ShipTransform) {
-        val newChunkWatchTasks: MutableList<ChunkWatchTask<P>> = ArrayList()
-        val newChunkUnwatchTasks: MutableList<ChunkUnwatchTask<P>> = ArrayList()
+    override fun tick(players: Iterator<IPlayer>, removedPlayers: Iterator<IPlayer>, shipTransform: ShipTransform) {
+        val newChunkWatchTasks: MutableList<ChunkWatchTask> = ArrayList()
+        val newChunkUnwatchTasks: MutableList<ChunkUnwatchTask> = ArrayList()
 
         // Reuse these vector objects across iterations
         val tempVector0 = Vector3d()
@@ -43,8 +43,8 @@ class ShipChunkTracker<P : IPlayer>(
                     )
                 )
 
-                val newPlayersWatching: MutableList<P> = ArrayList()
-                val newPlayersUnwatching: MutableList<P> = ArrayList()
+                val newPlayersWatching: MutableList<IPlayer> = ArrayList()
+                val newPlayersUnwatching: MutableList<IPlayer> = ArrayList()
 
                 for (player in players) {
                     val playerPositionInWorldCoordinates: Vector3dc = player.getPosition(tempVector1)
@@ -68,18 +68,18 @@ class ShipChunkTracker<P : IPlayer>(
 
                 val chunkPosAsLong = IShipActiveChunksSet.chunkPosToLong(chunkX, chunkZ)
                 if (newPlayersWatching.isNotEmpty()) {
-                    val newChunkWatchTask = ChunkWatchTask<P>(chunkPosAsLong, newPlayersWatching, 0.0)
+                    val newChunkWatchTask = ChunkWatchTask(chunkPosAsLong, newPlayersWatching, 0.0)
                     newChunkWatchTasks.add(newChunkWatchTask)
                 }
                 if (newPlayersUnwatching.isNotEmpty()) {
-                    val newChunkUnwatchTask = ChunkUnwatchTask<P>(chunkPosAsLong, newPlayersWatching)
+                    val newChunkUnwatchTask = ChunkUnwatchTask(chunkPosAsLong, newPlayersWatching)
                     newChunkUnwatchTasks.add(newChunkUnwatchTask)
                 }
             }
         }
     }
 
-    private fun isPlayerWatchingChunk(chunkX: Int, chunkZ: Int, player: P): Boolean {
+    private fun isPlayerWatchingChunk(chunkX: Int, chunkZ: Int, player: IPlayer): Boolean {
         val chunkPosAsLong = IShipActiveChunksSet.chunkPosToLong(chunkX, chunkZ)
         val playersWatchingChunk = playersWatchingChunkMap[chunkPosAsLong]
         if (playersWatchingChunk != null) {
@@ -88,20 +88,20 @@ class ShipChunkTracker<P : IPlayer>(
         return false
     }
 
-    override fun getPlayersWatchingChunk(chunkX: Int, chunkZ: Int): Iterator<P> {
+    override fun getPlayersWatchingChunk(chunkX: Int, chunkZ: Int): Iterator<IPlayer> {
         val chunkPosAsLong = IShipActiveChunksSet.chunkPosToLong(chunkX, chunkZ)
         val playersWatchingChunk = playersWatchingChunkMap[chunkPosAsLong]
         if (playersWatchingChunk != null) {
             return playersWatchingChunk.iterator()
         }
-        return listOf<P>().iterator()
+        return listOf<IPlayer>().iterator()
     }
 
-    override fun getChunkWatchTasks(): Iterator<ChunkWatchTask<P>> {
+    override fun getChunkWatchTasks(): Iterator<ChunkWatchTask> {
         return chunkWatchTasks.iterator()
     }
 
-    override fun getChunkUnwatchTasks(): Iterator<ChunkUnwatchTask<P>> {
+    override fun getChunkUnwatchTasks(): Iterator<ChunkUnwatchTask> {
         return chunkUnwatchTasks.iterator()
     }
 
