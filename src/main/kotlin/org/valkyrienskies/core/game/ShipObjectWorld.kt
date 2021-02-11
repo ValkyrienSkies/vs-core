@@ -18,8 +18,23 @@ class ShipObjectWorld(
 
     val uuidToShipObjectMap = HashMap<UUID, ShipObject>()
 
-    fun tick() {
+    private var lastPlayersSet: Set<IPlayer> = setOf()
 
+    fun tick(currentPlayers: Iterable<IPlayer>) {
+        val removedPlayers = lastPlayersSet - currentPlayers
+        lastPlayersSet = currentPlayers.toSet()
+
+        for (shipObject in uuidToShipObjectMap.values) {
+            shipObject.shipChunkTracker.tick(
+                players = currentPlayers.iterator(),
+                removedPlayers = removedPlayers.iterator(),
+                shipTransform = shipObject.shipData.shipTransform
+            )
+
+            val chunkWatchTasks = shipObject.shipChunkTracker.getChunkWatchTasks()
+            val chunkUnwatchTasks = shipObject.shipChunkTracker.getChunkUnwatchTasks()
+            // TODO: Execute these tasks
+        }
     }
 
     /**
@@ -52,9 +67,17 @@ class ShipObjectWorld(
         return newShipData
     }
 
-    fun onSetBlock(posX: Int, posY: Int, posZ: Int, blockType: VSBlockType, oldBlockMass: Double, newBlockMass: Double) {
+    fun onSetBlock(
+        posX: Int,
+        posY: Int,
+        posZ: Int,
+        blockType: VSBlockType,
+        oldBlockMass: Double,
+        newBlockMass: Double
+    ) {
         // If there is a ShipData at this position, then tell it about the block update
-        queryableShipData.getShipDataFromChunkPos(posX shr 4, posZ shr 4)?.onSetBlock(posX, posY, posZ, blockType, oldBlockMass, newBlockMass)
+        queryableShipData.getShipDataFromChunkPos(posX shr 4, posZ shr 4)
+            ?.onSetBlock(posX, posY, posZ, blockType, oldBlockMass, newBlockMass)
 
         // TODO: Update the physics voxel world here
         // voxelWorld.onSetBlock(posX, posY, posZ, blockType)
