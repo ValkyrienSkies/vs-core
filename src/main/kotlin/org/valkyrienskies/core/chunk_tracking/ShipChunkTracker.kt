@@ -26,7 +26,7 @@ class ShipChunkTracker<P : IPlayer>(
         chunkUnwatchDistance = newChunkUnwatchDistance
     }
 
-    override fun tick(players: Iterator<P>, shipTransform: ShipTransform) {
+    override fun tick(players: Iterator<P>, removedPlayers: Iterator<P>, shipTransform: ShipTransform) {
         val newChunkWatchTasks: MutableList<ChunkWatchTask<P>> = ArrayList()
         val newChunkUnwatchTasks: MutableList<ChunkUnwatchTask<P>> = ArrayList()
 

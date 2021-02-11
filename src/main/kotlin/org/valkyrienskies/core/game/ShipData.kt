@@ -3,9 +3,10 @@ package org.valkyrienskies.core.game
 import org.joml.Vector3dc
 import org.joml.primitives.AABBd
 import org.joml.primitives.AABBdc
+import org.valkyrienskies.core.chunk_tracking.IShipActiveChunksSet
+import org.valkyrienskies.core.chunk_tracking.ShipActiveChunksSet
 import org.valkyrienskies.core.datastructures.IBlockPosSet
 import org.valkyrienskies.core.datastructures.IBlockPosSetAABB
-import org.valkyrienskies.core.datastructures.SmallBlockPosSet
 import org.valkyrienskies.core.datastructures.SmallBlockPosSetAABB
 import java.util.*
 
@@ -24,6 +25,7 @@ data class ShipData(
     var prevTickShipTransform: ShipTransform,
     var shipAABB: AABBdc,
     val blockPositionSet: IBlockPosSetAABB,
+    val shipActiveChunksSet: IShipActiveChunksSet
 ) {
     /**
      * Updates the [IBlockPosSet] and [ShipInertiaData] for this [ShipData]
@@ -53,6 +55,7 @@ data class ShipData(
             val prevTickShipTransform = shipTransform
             val shipAABB = AABBd()
             val blockPositionSet = SmallBlockPosSetAABB(chunkClaim)
+            val shipActiveChunksSet = ShipActiveChunksSet.createNewShipActiveChunkSet()
 
             return ShipData(
                 shipUUID = shipUUID,
@@ -64,6 +67,7 @@ data class ShipData(
                 prevTickShipTransform = prevTickShipTransform,
                 shipAABB = shipAABB,
                 blockPositionSet = blockPositionSet,
+                shipActiveChunksSet = shipActiveChunksSet
             )
         }
     }

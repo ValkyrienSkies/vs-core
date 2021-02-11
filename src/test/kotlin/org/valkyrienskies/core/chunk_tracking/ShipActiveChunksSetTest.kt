@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import org.valkyrienskies.core.VSRandomUtils
+import org.valkyrienskies.core.util.serialization.VSJacksonUtil
 
 internal class ShipActiveChunksSetTest {
 
@@ -36,5 +37,22 @@ internal class ShipActiveChunksSetTest {
         }
 
         shipActiveChunksSet.iterateChunkPos(sum)
+    }
+
+    /**
+     * Tests the correctness of [ShipActiveChunksSet] serialization and deserialization.
+     */
+    @RepeatedTest(25)
+    fun testSerializationAndDeSerialization() {
+        val shipActiveChunksSet = VSRandomUtils.randomShipActiveChunkSet(size = 100)
+        // Now serialize and deserialize and verify that they are the same
+        val serializedToBytes = VSJacksonUtil.defaultMapper.writeValueAsBytes(shipActiveChunksSet)
+        val shipActiveChunksSetDeserialized = VSJacksonUtil.defaultMapper.readValue(
+            serializedToBytes,
+            ShipActiveChunksSet::class.java
+        )
+
+        // Verify that both are equal
+        assertEquals(shipActiveChunksSet, shipActiveChunksSetDeserialized)
     }
 }

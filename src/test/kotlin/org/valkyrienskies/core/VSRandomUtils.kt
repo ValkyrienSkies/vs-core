@@ -4,6 +4,7 @@ import org.joml.Matrix3d
 import org.joml.Quaterniond
 import org.joml.Vector3d
 import org.joml.primitives.AABBd
+import org.valkyrienskies.core.chunk_tracking.ShipActiveChunksSet
 import org.valkyrienskies.core.datastructures.IBlockPosSet
 import org.valkyrienskies.core.datastructures.SmallBlockPosSet
 import org.valkyrienskies.core.datastructures.SmallBlockPosSetAABB
@@ -148,7 +149,8 @@ internal object VSRandomUtils {
             shipTransform = randomShipTransform(random),
             prevTickShipTransform = randomShipTransform(random),
             shipAABB = randomAABBd(random),
-            blockPositionSet = randomBlockPosSetAABB(random, random.nextInt(100))
+            blockPositionSet = randomBlockPosSetAABB(random, random.nextInt(100)),
+            shipActiveChunksSet = randomShipActiveChunkSet(random, random.nextInt(100))
         )
     }
 
@@ -159,6 +161,15 @@ internal object VSRandomUtils {
             queryableShipData.addShipData(randomShipData(random))
         }
         return queryableShipData
+    }
+
+    @Suppress("WeakerAccess")
+    fun randomShipActiveChunkSet(random: Random = Random.Default, size: Int): ShipActiveChunksSet {
+        val shipActiveChunkSet = ShipActiveChunksSet.createNewShipActiveChunkSet()
+        for (i in 1 .. size) {
+            shipActiveChunkSet.addChunkPos(randomIntegerNotCloseToLimit(random), randomIntegerNotCloseToLimit(random))
+        }
+        return shipActiveChunkSet
     }
 
 }
