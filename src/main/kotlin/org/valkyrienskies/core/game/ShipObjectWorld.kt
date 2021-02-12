@@ -22,7 +22,7 @@ class ShipObjectWorld(
 
     fun tick(currentPlayers: Iterable<IPlayer>) {
         val removedPlayers = lastPlayersSet - currentPlayers
-        lastPlayersSet = currentPlayers.toSet()
+        lastPlayersSet = currentPlayers.toHashSet()
 
         for (shipObject in uuidToShipObjectMap.values) {
             shipObject.shipChunkTracker.tick(

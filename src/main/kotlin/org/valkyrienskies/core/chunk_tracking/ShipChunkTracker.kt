@@ -6,6 +6,7 @@ import org.joml.Vector3d
 import org.joml.Vector3dc
 import org.valkyrienskies.core.game.IPlayer
 import org.valkyrienskies.core.game.ShipTransform
+import kotlin.math.min
 
 class ShipChunkTracker(
     private val shipActiveChunksSet: IShipActiveChunksSet,
@@ -14,7 +15,7 @@ class ShipChunkTracker(
 ) :
     IShipChunkTracker {
 
-    private val playersWatchingChunkMap: Long2ObjectMap<Set<IPlayer>> = Long2ObjectOpenHashMap()
+    private val playersWatchingChunkMap: Long2ObjectMap<MutableSet<IPlayer>> = Long2ObjectOpenHashMap()
     private val chunkWatchTasks: List<ChunkWatchTask> = listOf()
     private val chunkUnwatchTasks: List<ChunkUnwatchTask> = listOf()
 
@@ -46,6 +47,9 @@ class ShipChunkTracker(
                 val newPlayersWatching: MutableList<IPlayer> = ArrayList()
                 val newPlayersUnwatching: MutableList<IPlayer> = ArrayList()
 
+                var minWatchingDistanceSq = Double.MAX_VALUE
+                var minUnwatchingDistanceSq = Double.MAX_VALUE
+
                 for (player in players) {
                     val playerPositionInWorldCoordinates: Vector3dc = player.getPosition(tempVector1)
                     val displacementDistanceSq =
@@ -57,22 +61,32 @@ class ShipChunkTracker(
                         if (!isPlayerWatchingThisChunk) {
                             // Watch this chunk
                             newPlayersWatching.add(player)
+                            // Update [minWatchingDistanceSq]
+                            minWatchingDistanceSq = min(minWatchingDistanceSq, displacementDistanceSq)
                         }
                     } else if (displacementDistanceSq > chunkUnwatchDistance * chunkUnwatchDistance) {
                         if (isPlayerWatchingThisChunk) {
                             // Unwatch this chunk
                             newPlayersUnwatching.add(player)
+                            // Update [minUnwatchingDistanceSq]
+                            minUnwatchingDistanceSq = min(minUnwatchingDistanceSq, displacementDistanceSq)
                         }
                     }
                 }
 
                 val chunkPosAsLong = IShipActiveChunksSet.chunkPosToLong(chunkX, chunkZ)
                 if (newPlayersWatching.isNotEmpty()) {
-                    val newChunkWatchTask = ChunkWatchTask(chunkPosAsLong, newPlayersWatching, 0.0)
+                    val newChunkWatchTask =
+                        ChunkWatchTask(chunkPosAsLong, newPlayersWatching, minWatchingDistanceSq) {
+                            addWatchersToChunk(chunkPosAsLong, newPlayersWatching)
+                        }
                     newChunkWatchTasks.add(newChunkWatchTask)
                 }
                 if (newPlayersUnwatching.isNotEmpty()) {
-                    val newChunkUnwatchTask = ChunkUnwatchTask(chunkPosAsLong, newPlayersWatching)
+                    val newChunkUnwatchTask =
+                        ChunkUnwatchTask(chunkPosAsLong, newPlayersUnwatching, minUnwatchingDistanceSq) {
+                            removeWatchersFromChunk(chunkPosAsLong, newPlayersUnwatching)
+                        }
                     newChunkUnwatchTasks.add(newChunkUnwatchTask)
                 }
             }
@@ -103,6 +117,21 @@ class ShipChunkTracker(
 
     override fun getChunkUnwatchTasks(): Iterator<ChunkUnwatchTask> {
         return chunkUnwatchTasks.iterator()
+    }
+
+    private fun addWatchersToChunk(chunkPos: Long, newWatchingPlayers: Iterable<IPlayer>) {
+        if (playersWatchingChunkMap.containsKey(chunkPos)) {
+            playersWatchingChunkMap[chunkPos].addAll(newWatchingPlayers)
+        } else {
+            playersWatchingChunkMap[chunkPos] = newWatchingPlayers.toHashSet()
+        }
+    }
+
+    private fun removeWatchersFromChunk(chunkPos: Long, removedWatchingPlayers: Iterable<IPlayer>) {
+        playersWatchingChunkMap[chunkPos].removeAll(removedWatchingPlayers)
+        if (playersWatchingChunkMap[chunkPos].isEmpty()) {
+            playersWatchingChunkMap[chunkPos] = null
+        }
     }
 
 }
