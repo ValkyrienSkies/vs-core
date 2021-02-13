@@ -120,18 +120,13 @@ class ShipChunkTracker(
     }
 
     private fun addWatchersToChunk(chunkPos: Long, newWatchingPlayers: Iterable<IPlayer>) {
-        if (playersWatchingChunkMap.containsKey(chunkPos)) {
-            playersWatchingChunkMap[chunkPos].addAll(newWatchingPlayers)
-        } else {
-            playersWatchingChunkMap[chunkPos] = newWatchingPlayers.toHashSet()
-        }
+        playersWatchingChunkMap.computeIfAbsent(chunkPos) { HashSet() }.addAll(newWatchingPlayers)
     }
 
     private fun removeWatchersFromChunk(chunkPos: Long, removedWatchingPlayers: Iterable<IPlayer>) {
-        playersWatchingChunkMap[chunkPos].removeAll(removedWatchingPlayers)
-        if (playersWatchingChunkMap[chunkPos].isEmpty()) {
-            playersWatchingChunkMap[chunkPos] = null
-        }
+        val playersWatchingChunk = playersWatchingChunkMap[chunkPos]
+        playersWatchingChunk.removeAll(removedWatchingPlayers)
+        if (playersWatchingChunk.isEmpty()) playersWatchingChunkMap.remove(chunkPos)
     }
 
 }
