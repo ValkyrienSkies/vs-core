@@ -30,7 +30,22 @@ data class ShipData(
     /**
      * Updates the [IBlockPosSet] and [ShipInertiaData] for this [ShipData]
      */
-    internal fun onSetBlock(posX: Int, posY: Int, posZ: Int, blockType: VSBlockType, oldBlockMass: Double, newBlockMass: Double) {
+    internal fun onSetBlock(
+        posX: Int,
+        posY: Int,
+        posZ: Int,
+        blockType: VSBlockType,
+        oldBlockMass: Double,
+        newBlockMass: Double
+    ) {
+        // Sanity check
+        require(
+            chunkClaim.contains(
+                posX shr 4,
+                posZ shr 4
+            )
+        ) { "Block at <$posX, $posY, $posZ> is not in the chunk claim belonging to $this" }
+
         // Update [blockPositionsSet]
         if (blockType != VSBlockType.AIR) {
             blockPositionSet.add(posX, posY, posZ)
@@ -40,6 +55,9 @@ data class ShipData(
 
         // Update [inertiaData]
         inertiaData.onSetBlock(posX, posY, posZ, oldBlockMass, newBlockMass)
+
+        // Add the chunk to the active chunk set
+        shipActiveChunksSet.addChunkPos(posX shr 4, posZ shr 4)
     }
 
     companion object {
@@ -47,11 +65,17 @@ data class ShipData(
          * Creates a new [ShipData] from the given name and coordinates. The resulting [ShipData] is completely empty,
          * so it must be filled with blocks by other code.
          */
-        internal fun newEmptyShipData(name: String, chunkClaim: ChunkClaim, shipCenterInWorldCoordinates: Vector3dc, shipCenterInShipCoordinates: Vector3dc): ShipData {
+        internal fun newEmptyShipData(
+            name: String,
+            chunkClaim: ChunkClaim,
+            shipCenterInWorldCoordinates: Vector3dc,
+            shipCenterInShipCoordinates: Vector3dc
+        ): ShipData {
             val shipUUID = UUID.randomUUID()
             val physicsData = ShipPhysicsData.newEmptyShipPhysicsData()
             val inertiaData = ShipInertiaData.newEmptyShipInertiaData()
-            val shipTransform = ShipTransform.newShipTransformFromCoordinates(shipCenterInWorldCoordinates, shipCenterInShipCoordinates)
+            val shipTransform =
+                ShipTransform.newShipTransformFromCoordinates(shipCenterInWorldCoordinates, shipCenterInShipCoordinates)
             val prevTickShipTransform = shipTransform
             val shipAABB = AABBd()
             val blockPositionSet = SmallBlockPosSetAABB(chunkClaim)

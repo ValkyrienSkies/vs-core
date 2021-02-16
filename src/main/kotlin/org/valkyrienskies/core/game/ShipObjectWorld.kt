@@ -22,6 +22,14 @@ class ShipObjectWorld(
 
     private var lastPlayersSet: Set<IPlayer> = setOf()
 
+    fun tickShips() {
+        // For now, just make a [ShipObject] for every [ShipData]
+        for (shipData in queryableShipData) {
+            val shipID = shipData.shipUUID
+            uuidToShipObjectMap.computeIfAbsent(shipID) { ShipObject(shipData) }
+        }
+    }
+
     /**
      * Determines which ship chunks should be watched/unwatched by the players.
      *
@@ -37,8 +45,8 @@ class ShipObjectWorld(
 
         for (shipObject in uuidToShipObjectMap.values) {
             shipObject.shipChunkTracker.tick(
-                players = currentPlayers.iterator(),
-                removedPlayers = removedPlayers.iterator(),
+                players = currentPlayers,
+                removedPlayers = removedPlayers,
                 shipTransform = shipObject.shipData.shipTransform
             )
 
