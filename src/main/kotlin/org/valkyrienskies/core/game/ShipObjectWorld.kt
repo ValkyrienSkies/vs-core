@@ -4,6 +4,8 @@ import org.joml.Vector3d
 import org.joml.Vector3dc
 import org.joml.Vector3i
 import org.joml.Vector3ic
+import org.valkyrienskies.core.chunk_tracking.ChunkUnwatchTask
+import org.valkyrienskies.core.chunk_tracking.ChunkWatchTask
 import org.valkyrienskies.core.util.names.NounListNameGenerator
 import java.util.*
 import kotlin.collections.HashMap
@@ -20,9 +22,18 @@ class ShipObjectWorld(
 
     private var lastPlayersSet: Set<IPlayer> = setOf()
 
-    fun tick(currentPlayers: Iterable<IPlayer>) {
+    /**
+     * Determines which ship chunks should be watched/unwatched by the players.
+     *
+     * It only returns the tasks, it is up to the caller to execute the tasks; however they do not have to execute all of them.
+     * It is up to the caller to decide which tasks to execute, and which ones to skip.
+     */
+    fun tickShipChunkLoading(currentPlayers: Iterable<IPlayer>): Pair<Spliterator<ChunkWatchTask>, Spliterator<ChunkUnwatchTask>> {
         val removedPlayers = lastPlayersSet - currentPlayers
         lastPlayersSet = currentPlayers.toHashSet()
+
+        val chunkWatchTasksSorted = TreeSet<ChunkWatchTask>()
+        val chunkUnwatchTasksSorted = TreeSet<ChunkUnwatchTask>()
 
         for (shipObject in uuidToShipObjectMap.values) {
             shipObject.shipChunkTracker.tick(
@@ -33,8 +44,12 @@ class ShipObjectWorld(
 
             val chunkWatchTasks = shipObject.shipChunkTracker.getChunkWatchTasks()
             val chunkUnwatchTasks = shipObject.shipChunkTracker.getChunkUnwatchTasks()
-            // TODO: Execute these tasks
+
+            chunkWatchTasks.forEach { chunkWatchTasksSorted.add(it) }
+            chunkUnwatchTasks.forEach { chunkUnwatchTasksSorted.add(it) }
         }
+
+        return Pair(chunkWatchTasksSorted.spliterator(), chunkUnwatchTasksSorted.spliterator())
     }
 
     /**
