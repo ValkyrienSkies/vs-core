@@ -58,6 +58,12 @@ data class ShipData(
 
         // Add the chunk to the active chunk set
         shipActiveChunksSet.addChunkPos(posX shr 4, posZ shr 4)
+        // Add the neighbors too (Required for rendering code in MC 1.16, chunks without neighbors won't render)
+        // TODO: Make a separate set for keeping track of neighbors
+        shipActiveChunksSet.addChunkPos((posX shr 4) - 1, (posZ shr 4))
+        shipActiveChunksSet.addChunkPos((posX shr 4) + 1, (posZ shr 4))
+        shipActiveChunksSet.addChunkPos((posX shr 4), (posZ shr 4) - 1)
+        shipActiveChunksSet.addChunkPos((posX shr 4), (posZ shr 4) + 1)
     }
 
     companion object {
