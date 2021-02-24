@@ -1,11 +1,6 @@
 package org.valkyrienskies.core.game
 
-import org.joml.Matrix4d
-import org.joml.Matrix4dc
-import org.joml.Quaterniond
-import org.joml.Quaterniondc
-import org.joml.Vector3d
-import org.joml.Vector3dc
+import org.joml.*
 
 /**
  * The [ShipTransform] class is responsible for transforming position and direction vectors between ship coordinates and world coordinates.
@@ -49,6 +44,10 @@ data class ShipTransform(val shipPositionInWorldCoordinates: Vector3dc, val ship
 
         fun newShipTransformFromCoordinatesAndRotation(centerCoordinateInWorld: Vector3dc, centerCoordinateInShip: Vector3dc, shipRotation: Quaterniondc): ShipTransform {
             return ShipTransform(centerCoordinateInWorld, centerCoordinateInShip, shipRotation, UNIT_SCALING)
+        }
+
+        fun newShipTransformFromCoordinatesAndRotationAndScaling(centerCoordinateInWorld: Vector3dc, centerCoordinateInShip: Vector3dc, shipRotation: Quaterniondc, shipScaling: Vector3dc): ShipTransform {
+            return ShipTransform(centerCoordinateInWorld, centerCoordinateInShip, shipRotation, shipScaling)
         }
     }
 

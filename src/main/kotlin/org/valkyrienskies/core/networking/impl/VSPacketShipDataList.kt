@@ -26,9 +26,9 @@ class VSPacketShipDataList private constructor() : IVSPacket {
     }
 
     companion object {
-        fun createVSPacketShipDataList(shipDataCollection: Collection<ShipData>): VSPacketShipDataList {
+        fun createVSPacketShipDataList(shipDataCollection: Iterator<ShipData>): VSPacketShipDataList {
             val packet = VSPacketShipDataList()
-            packet.shipDataList = ArrayList(shipDataCollection)
+            packet.shipDataList = shipDataCollection.asSequence().toList()
             return packet
         }
 

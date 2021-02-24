@@ -1,5 +1,7 @@
 package org.valkyrienskies.core.game
 
+import org.joml.Quaterniond
+import org.joml.Vector3d
 import org.joml.Vector3dc
 import org.joml.primitives.AABBd
 import org.joml.primitives.AABBdc
@@ -81,7 +83,7 @@ data class ShipData(
             val physicsData = ShipPhysicsData.newEmptyShipPhysicsData()
             val inertiaData = ShipInertiaData.newEmptyShipInertiaData()
             val shipTransform =
-                ShipTransform.newShipTransformFromCoordinates(shipCenterInWorldCoordinates, shipCenterInShipCoordinates)
+                ShipTransform.newShipTransformFromCoordinatesAndRotationAndScaling(shipCenterInWorldCoordinates, shipCenterInShipCoordinates, Quaterniond().fromAxisAngleDeg(0.0, 1.0, 0.0, 45.0), Vector3d(.5, .5, .5))
             val prevTickShipTransform = shipTransform
             val shipAABB = AABBd()
             val blockPositionSet = SmallBlockPosSetAABB(chunkClaim)
