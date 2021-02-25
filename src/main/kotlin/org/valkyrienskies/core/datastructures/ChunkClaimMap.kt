@@ -7,14 +7,14 @@ import org.valkyrienskies.core.game.ChunkClaim
 /**
  * Maps [ChunkClaim]s to [T].
  *
- * The [getDataAtChunkPosition] function allows accessing the [T] that claims that chunk position (if there is one) in
+ * The [get] function allows accessing the [T] that claims that chunk position (if there is one) in
  * O(1) time. It makes no objects so its very efficient.
  */
 class ChunkClaimMap<T> {
 
     private val backingMap: Long2ObjectMap<T> = Long2ObjectOpenHashMap()
 
-    fun addChunkClaim(chunkClaim: ChunkClaim, data: T) {
+    operator fun set(chunkClaim: ChunkClaim, data: T) {
         val claimAsLong = chunkClaim.toLong()
         if (backingMap.containsKey(claimAsLong)) {
             // There is already data at this claim, throw exception
@@ -23,7 +23,7 @@ class ChunkClaimMap<T> {
         backingMap.put(claimAsLong, data)
     }
 
-    fun removeChunkClaim(chunkClaim: ChunkClaim) {
+    fun remove(chunkClaim: ChunkClaim) {
         val claimAsLong = chunkClaim.toLong()
         if (backingMap.remove(claimAsLong) == null) {
             // Throw exception if we didn't remove anything
@@ -31,7 +31,11 @@ class ChunkClaimMap<T> {
         }
     }
 
-    fun getDataAtChunkPosition(chunkX: Int, chunkZ: Int): T? {
+    operator fun get(chunkClaim: ChunkClaim): T? {
+        return backingMap[chunkClaim.toLong()]
+    }
+
+    operator fun get(chunkX: Int, chunkZ: Int): T? {
         val chunkPosToClaimAsLong = ChunkClaim.getClaimThenToLong(chunkX, chunkZ)
         return backingMap[chunkPosToClaimAsLong]
     }

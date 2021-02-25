@@ -12,9 +12,9 @@ internal class ChunkClaimMapTest {
         val chunkClaimMap = ChunkClaimMap<Int>()
         val chunkClaim = VSRandomUtils.randomChunkClaim()
         val value = VSRandomUtils.randomIntegerNotCloseToLimit()
-        chunkClaimMap.addChunkClaim(chunkClaim, value)
-        assertEquals(value, chunkClaimMap.getDataAtChunkPosition(chunkClaim.xStart, chunkClaim.zStart))
-        assertThrows<IllegalArgumentException> { chunkClaimMap.addChunkClaim(chunkClaim, value) }
+        chunkClaimMap.set(chunkClaim, value)
+        assertEquals(value, chunkClaimMap.get(chunkClaim.xStart, chunkClaim.zStart))
+        assertThrows<IllegalArgumentException> { chunkClaimMap.set(chunkClaim, value) }
     }
 
     @Test
@@ -22,11 +22,11 @@ internal class ChunkClaimMapTest {
         val chunkClaimMap = ChunkClaimMap<Int>()
         val chunkClaim = VSRandomUtils.randomChunkClaim()
         val value = VSRandomUtils.randomIntegerNotCloseToLimit()
-        chunkClaimMap.addChunkClaim(chunkClaim, value)
-        assertEquals(value, chunkClaimMap.getDataAtChunkPosition(chunkClaim.xStart, chunkClaim.zStart))
-        chunkClaimMap.removeChunkClaim(chunkClaim)
-        assertEquals(null, chunkClaimMap.getDataAtChunkPosition(chunkClaim.xStart, chunkClaim.zStart))
-        assertThrows<IllegalArgumentException> { chunkClaimMap.removeChunkClaim(chunkClaim) }
+        chunkClaimMap.set(chunkClaim, value)
+        assertEquals(value, chunkClaimMap.get(chunkClaim.xStart, chunkClaim.zStart))
+        chunkClaimMap.remove(chunkClaim)
+        assertEquals(null, chunkClaimMap.get(chunkClaim.xStart, chunkClaim.zStart))
+        assertThrows<IllegalArgumentException> { chunkClaimMap.remove(chunkClaim) }
     }
 
     @Test
@@ -34,7 +34,7 @@ internal class ChunkClaimMapTest {
         val chunkClaimMap = ChunkClaimMap<Int>()
         val chunkClaim = VSRandomUtils.randomChunkClaim()
         val value = VSRandomUtils.randomIntegerNotCloseToLimit()
-        chunkClaimMap.addChunkClaim(chunkClaim, value)
-        assertEquals(value, chunkClaimMap.getDataAtChunkPosition(chunkClaim.xStart, chunkClaim.zStart))
+        chunkClaimMap.set(chunkClaim, value)
+        assertEquals(value, chunkClaimMap.get(chunkClaim.xStart, chunkClaim.zStart))
     }
 }

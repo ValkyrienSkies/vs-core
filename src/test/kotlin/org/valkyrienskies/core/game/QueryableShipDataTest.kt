@@ -1,9 +1,7 @@
 package org.valkyrienskies.core.game
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Assertions.assertTrue
+import com.fasterxml.jackson.module.kotlin.readValue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import org.valkyrienskies.core.VSRandomUtils
@@ -110,11 +108,8 @@ internal class QueryableShipDataTest {
     fun testSerializationAndDeSerialization() {
         val queryableShipData = VSRandomUtils.randomQueryableShipData(size=Random.nextInt(20))
         // Now serialize and deserialize and verify that they are the same
-        val queryableShipDataSerialized = VSJacksonUtil.defaultMapper.writeValueAsBytes(queryableShipData)
-        val queryableShipDataDeserialized = VSJacksonUtil.defaultMapper.readValue(
-            queryableShipDataSerialized,
-            QueryableShipData::class.java
-        )
+        val queryableShipDataSerialized = VSJacksonUtil.defaultMapper.writeValueAsBytes(queryableShipData.toList())
+        val queryableShipDataDeserialized = QueryableShipData(VSJacksonUtil.defaultMapper.readValue(queryableShipDataSerialized))
         // Verify that both are equal
         assertEquals(queryableShipData, queryableShipDataDeserialized)
     }
