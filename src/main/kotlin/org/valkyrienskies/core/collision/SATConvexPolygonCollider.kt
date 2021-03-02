@@ -13,8 +13,7 @@ object SATConvexPolygonCollider : ConvexPolygonCollider {
         collisionResult: CollisionResult,
         temp1: CollisionRange,
         temp2: CollisionRange,
-        temp3: CollisionRange,
-        temp4: CollisionRangeOverlapping
+        temp3: CollisionRange
     ) {
         var minCollisionDepth = Double.MAX_VALUE
 
@@ -23,15 +22,13 @@ object SATConvexPolygonCollider : ConvexPolygonCollider {
             val secondCollisionRange: CollisionRangec = secondPolygon.getProjectionAlongAxis(normal, temp2)
 
             val overlappingCollisionRange: CollisionRange = temp3
-            val isCollisionRangeOverlapping: CollisionRangeOverlapping = temp4
-            CollisionRangec.computeOverlap(
+            val areRangesOverlapping = CollisionRangec.computeOverlap(
                 firstCollisionRange,
                 secondCollisionRange,
-                overlappingCollisionRange,
-                isCollisionRangeOverlapping
+                overlappingCollisionRange
             )
 
-            if (!isCollisionRangeOverlapping.overlapping) {
+            if (!areRangesOverlapping) {
                 // Polygons are separated
                 collisionResult.colliding = false
                 return

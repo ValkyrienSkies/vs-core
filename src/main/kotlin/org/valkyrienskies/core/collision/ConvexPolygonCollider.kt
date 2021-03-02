@@ -20,7 +20,6 @@ interface ConvexPolygonCollider {
         collisionResult: CollisionResult,
         temp1: CollisionRange,
         temp2: CollisionRange,
-        temp3: CollisionRange,
-        temp4: CollisionRangeOverlapping
+        temp3: CollisionRange
     )
 }

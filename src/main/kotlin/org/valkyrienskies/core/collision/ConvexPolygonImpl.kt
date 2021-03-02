@@ -4,6 +4,9 @@ import org.joml.Vector3dc
 import java.lang.Double.max
 import java.lang.Double.min
 
+/**
+ * A basic implementation of [ConvexPolygon].
+ */
 class ConvexPolygonImpl private constructor(private val points: List<Vector3dc>, private val normals: List<Vector3dc>) :
     ConvexPolygon {
     override fun getProjectionAlongAxis(normalAxis: Vector3dc, output: CollisionRange): CollisionRange {

@@ -3,6 +3,9 @@ package org.valkyrienskies.core.collision
 import org.joml.Vector3d
 import org.joml.Vector3dc
 
+/**
+ * A [CollisionResult] is used to describe the collision between two polygons.
+ */
 class CollisionResult private constructor(
     internal var colliding: Boolean,
     internal val minCollisionRange: CollisionRange,
