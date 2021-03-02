@@ -5,5 +5,5 @@ package org.valkyrienskies.core.networking
  * @param P The player object class
  */
 interface IVSPacketToClientSender<P> {
-    fun sendToClient(vsPacket: IVSPacket, player: P)
+	fun sendToClient(vsPacket: IVSPacket, player: P)
 }

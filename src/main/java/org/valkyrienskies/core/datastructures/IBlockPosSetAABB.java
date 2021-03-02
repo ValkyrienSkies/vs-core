@@ -8,11 +8,11 @@ import org.joml.primitives.AABBd;
  */
 public interface IBlockPosSetAABB extends IBlockPosSet {
 
-    /**
-     * Creates a tight AxisAlignedBB that contains all block positions in the set.
-     *
-     * @return Null if there are no block positions in this set.
-     */
-    @Nullable
-    AABBd makeAABB();
+	/**
+	 * Creates a tight AxisAlignedBB that contains all block positions in the set.
+	 *
+	 * @return Null if there are no block positions in this set.
+	 */
+	@Nullable
+	AABBd makeAABB();
 }

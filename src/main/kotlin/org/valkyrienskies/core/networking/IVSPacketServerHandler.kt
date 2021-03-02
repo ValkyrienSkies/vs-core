@@ -5,5 +5,5 @@ package org.valkyrienskies.core.networking
  * @param P The player object class
  */
 fun interface IVSPacketServerHandler<P> {
-    fun handlePacket(vsPacket: IVSPacket, sender: P)
+	fun handlePacket(vsPacket: IVSPacket, sender: P)
 }

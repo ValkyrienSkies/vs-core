@@ -13,46 +13,46 @@ import org.joml.Vector3ic;
  */
 public class NaiveBlockPosSet implements IBlockPosSet {
 
-    private final Set<Vector3ic> blockPosSet;
+	private final Set<Vector3ic> blockPosSet;
 
-    public NaiveBlockPosSet() {
-        this.blockPosSet = new HashSet<>();
-    }
+	public NaiveBlockPosSet() {
+		this.blockPosSet = new HashSet<>();
+	}
 
-    @Override
-    public boolean add(int x, int y, int z) {
-        return blockPosSet.add(new Vector3i(x, y, z));
-    }
+	@Override
+	public boolean add(int x, int y, int z) {
+		return blockPosSet.add(new Vector3i(x, y, z));
+	}
 
-    @Override
-    public boolean remove(int x, int y, int z) {
-        return blockPosSet.remove(new Vector3i(x, y, z));
-    }
+	@Override
+	public boolean remove(int x, int y, int z) {
+		return blockPosSet.remove(new Vector3i(x, y, z));
+	}
 
-    @Override
-    public boolean contains(int x, int y, int z) {
-        return blockPosSet.contains(new Vector3i(x, y, z));
-    }
+	@Override
+	public boolean contains(int x, int y, int z) {
+		return blockPosSet.contains(new Vector3i(x, y, z));
+	}
 
-    @Override
-    public boolean canStore(int x, int y, int z) {
-        return true;
-    }
+	@Override
+	public boolean canStore(int x, int y, int z) {
+		return true;
+	}
 
-    @Override
-    public int size() {
-        return blockPosSet.size();
-    }
+	@Override
+	public int size() {
+		return blockPosSet.size();
+	}
 
-    @NotNull
-    @Override
-    public Iterator<Vector3ic> iterator() {
-        return blockPosSet.iterator();
-    }
+	@NotNull
+	@Override
+	public Iterator<Vector3ic> iterator() {
+		return blockPosSet.iterator();
+	}
 
-    @Override
-    public void clear() {
-        blockPosSet.clear();
-    }
+	@Override
+	public void clear() {
+		blockPosSet.clear();
+	}
 
 }

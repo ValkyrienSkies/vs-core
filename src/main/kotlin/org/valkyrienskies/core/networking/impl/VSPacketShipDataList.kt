@@ -12,28 +12,28 @@ import java.io.OutputStream
 
 class VSPacketShipDataList private constructor() : IVSPacket {
 
-    lateinit var shipDataList: List<ShipData>
-        private set
+	lateinit var shipDataList: List<ShipData>
+		private set
 
-    override fun write(byteBuf: ByteBuf) {
-        val byteBufAsOutputStream: OutputStream = ByteBufOutputStream(byteBuf)
-        VSJacksonUtil.defaultMapper.writeValue(byteBufAsOutputStream, shipDataList)
-    }
+	override fun write(byteBuf: ByteBuf) {
+		val byteBufAsOutputStream: OutputStream = ByteBufOutputStream(byteBuf)
+		VSJacksonUtil.defaultMapper.writeValue(byteBufAsOutputStream, shipDataList)
+	}
 
-    override fun read(byteBuf: ByteBuf) {
-        val byteBufAsInputStream: InputStream = ByteBufInputStream(byteBuf)
-        shipDataList = VSJacksonUtil.defaultMapper.readValue(byteBufAsInputStream)
-    }
+	override fun read(byteBuf: ByteBuf) {
+		val byteBufAsInputStream: InputStream = ByteBufInputStream(byteBuf)
+		shipDataList = VSJacksonUtil.defaultMapper.readValue(byteBufAsInputStream)
+	}
 
-    companion object {
-        fun create(shipDataCollection: Iterator<ShipData>): VSPacketShipDataList {
-            val packet = VSPacketShipDataList()
-            packet.shipDataList = shipDataCollection.asSequence().toList()
-            return packet
-        }
+	companion object {
+		fun create(shipDataCollection: Iterator<ShipData>): VSPacketShipDataList {
+			val packet = VSPacketShipDataList()
+			packet.shipDataList = shipDataCollection.asSequence().toList()
+			return packet
+		}
 
-        fun createEmpty(): VSPacketShipDataList {
-            return VSPacketShipDataList()
-        }
-    }
+		fun createEmpty(): VSPacketShipDataList {
+			return VSPacketShipDataList()
+		}
+	}
 }

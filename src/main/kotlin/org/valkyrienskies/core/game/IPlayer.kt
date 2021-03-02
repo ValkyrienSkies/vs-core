@@ -7,10 +7,10 @@ import java.util.UUID
  * An interface that represents players.
  */
 interface IPlayer {
-    /**
-     * Sets [dest] to be the current position of this [IPlayer], and then returns dest.
-     */
-    fun getPosition(dest: Vector3d): Vector3d
+	/**
+	 * Sets [dest] to be the current position of this [IPlayer], and then returns dest.
+	 */
+	fun getPosition(dest: Vector3d): Vector3d
 
-    val uuid: UUID
+	val uuid: UUID
 }

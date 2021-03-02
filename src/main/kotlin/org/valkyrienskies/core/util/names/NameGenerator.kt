@@ -5,5 +5,5 @@ package org.valkyrienskies.core.util.names
  * human-readable, that's implementation dependent.
  */
 interface NameGenerator {
-    fun generateName(): String
+	fun generateName(): String
 }

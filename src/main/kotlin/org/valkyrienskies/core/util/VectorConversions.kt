@@ -27,9 +27,9 @@ fun Vector3ic.multiplyTerms() = x * y * z
 // Vector3dc
 fun Vector3dc.toGDX() = Vector3() set this
 infix fun Vector3.set(v: Vector3dc): Vector3 = also {
-    x = v.x.toFloat()
-    y = v.y.toFloat()
-    z = v.z.toFloat()
+	x = v.x.toFloat()
+	y = v.y.toFloat()
+	z = v.z.toFloat()
 }
 
 operator fun Vector3dc.component1() = x
@@ -59,15 +59,15 @@ fun Matrix3dc.toGDX() = Matrix3() set this
 infix fun Matrix3.set(m: Matrix3dc): Matrix3 = also { m.get(values) }
 
 infix fun Vector3d.set(v: Vector3): Vector3d = also {
-    x = v.x.toDouble()
-    y = v.y.toDouble()
-    z = v.z.toDouble()
+	x = v.x.toDouble()
+	y = v.y.toDouble()
+	z = v.z.toDouble()
 }
 
 infix fun Vector3i.set(v: Vector3): Vector3i = also {
-    x = v.x.toInt()
-    y = v.y.toInt()
-    z = v.z.toInt()
+	x = v.x.toInt()
+	y = v.y.toInt()
+	z = v.z.toInt()
 }
 
 // Matrix4

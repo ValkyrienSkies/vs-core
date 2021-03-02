@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test
  */
 internal class TestStuff {
 
-    @Test
-    fun testStuff() {
-        assertEquals(5, 5)
-    }
+	@Test
+	fun testStuff() {
+		assertEquals(5, 5)
+	}
 }

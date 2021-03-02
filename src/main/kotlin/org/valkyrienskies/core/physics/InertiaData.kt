@@ -10,15 +10,15 @@ import org.joml.Vector3dc
  * but request update on the rigid body which owns it.
  */
 data class InertiaData(
-    var mass: Double,
-    /**
-     * The center of mass of the rigid body. This is a coordinate
-     * IN the world, NOT relative to the rigid body.
-     */
-    val centerOfMass: Vector3dc,
-    val inertia: Matrix3dc
+	var mass: Double,
+	/**
+	 * The center of mass of the rigid body. This is a coordinate
+	 * IN the world, NOT relative to the rigid body.
+	 */
+	val centerOfMass: Vector3dc,
+	val inertia: Matrix3dc
 ) {
-    companion object {
-        val STATIC = InertiaData(0.0, Vector3d(), Matrix3d())
-    }
+	companion object {
+		val STATIC = InertiaData(0.0, Vector3d(), Matrix3d())
+	}
 }
