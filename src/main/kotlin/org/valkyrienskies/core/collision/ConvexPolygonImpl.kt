@@ -1,6 +1,9 @@
 package org.valkyrienskies.core.collision
 
+import org.joml.Matrix4dc
+import org.joml.Vector3d
 import org.joml.Vector3dc
+import org.joml.primitives.AABBdc
 import java.lang.Double.max
 import java.lang.Double.min
 
@@ -30,8 +33,31 @@ class ConvexPolygonImpl private constructor(private val points: List<Vector3dc>,
     }
 
     companion object {
+        private val UNIT_NORMALS: List<Vector3dc> =
+            listOf(Vector3d(1.0, 0.0, 0.0), Vector3d(0.0, 1.0, 0.0), Vector3d(1.0, 0.0, 1.0))
+
         fun createFromPointsAndNormals(points: List<Vector3dc>, normals: List<Vector3dc>): ConvexPolygonImpl {
             return ConvexPolygonImpl(points, normals)
+        }
+
+        fun createFromAABB(aabb: AABBdc, transform: Matrix4dc?): ConvexPolygonImpl {
+            val points: List<Vector3d> = listOf(
+                Vector3d(aabb.minX(), aabb.minY(), aabb.minZ()),
+                Vector3d(aabb.minX(), aabb.minY(), aabb.maxZ()),
+                Vector3d(aabb.minX(), aabb.maxY(), aabb.minZ()),
+                Vector3d(aabb.minX(), aabb.maxY(), aabb.maxZ()),
+                Vector3d(aabb.maxX(), aabb.minY(), aabb.minZ()),
+                Vector3d(aabb.maxX(), aabb.minY(), aabb.maxZ()),
+                Vector3d(aabb.maxX(), aabb.maxY(), aabb.minZ()),
+                Vector3d(aabb.maxX(), aabb.maxY(), aabb.maxZ())
+            )
+            if (transform != null) {
+                for (point in points) transform.transformPosition(point)
+                val normals: MutableList<Vector3dc> = ArrayList()
+                for (normal in UNIT_NORMALS) normals.add(transform.transformDirection(normal, Vector3d()))
+                return ConvexPolygonImpl(points, normals)
+            }
+            return ConvexPolygonImpl(points, UNIT_NORMALS)
         }
     }
 }
