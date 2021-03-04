@@ -28,4 +28,10 @@ class ConvexPolygonImpl private constructor(private val points: List<Vector3dc>,
     override fun getNormals(): Iterator<Vector3dc> {
         return normals.iterator()
     }
+
+    companion object {
+        fun createFromPointsAndNormals(points: List<Vector3dc>, normals: List<Vector3dc>): ConvexPolygonImpl {
+            return ConvexPolygonImpl(points, normals)
+        }
+    }
 }
