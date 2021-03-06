@@ -5,7 +5,7 @@ import org.joml.Vector3dc
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-internal class ConvexPolygonImplTest {
+internal class ConvexPolygonTest {
 
     @Test
     fun getProjectionAlongAxis() {
@@ -24,7 +24,7 @@ internal class ConvexPolygonImplTest {
             Vector3d(0.0, 1.0, 0.0),
             Vector3d(0.0, 0.0, 1.0)
         )
-        val convexPolygonImpl: ConvexPolygon = ConvexPolygonImpl.createFromPointsAndNormals(points, normals)
+        val convexPolygonImpl: ConvexPolygonc = ConvexPolygon.createFromPointsAndNormals(points, normals)
         val testedNormal: Vector3dc = Vector3d(0.0, 1.0, 0.0)
 
         val overlappingRange: CollisionRange = CollisionRange.create()

@@ -14,8 +14,8 @@ interface ConvexPolygonCollider {
      * The temp* parameters are objects used during the computation to avoid creating new objects. Their values do not matter, expect their values to be replaced with garbage.
      */
     fun checkIfColliding(
-        firstPolygon: ConvexPolygon,
-        secondPolygon: ConvexPolygon,
+        firstPolygon: ConvexPolygonc,
+        secondPolygon: ConvexPolygonc,
         normals: Iterator<Vector3dc>,
         collisionResult: CollisionResult,
         temp1: CollisionRange,

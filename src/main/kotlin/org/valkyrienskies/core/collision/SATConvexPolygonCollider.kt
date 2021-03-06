@@ -3,12 +3,12 @@ package org.valkyrienskies.core.collision
 import org.joml.Vector3dc
 
 /**
- * A basic implementation of [ConvexPolygonCollider] using the Separating Axis Test algorithm.
+ * A basic implementation of [ConvexPolygonCollider] using the Separating Axis Theorem algorithm.
  */
 object SATConvexPolygonCollider : ConvexPolygonCollider {
     override fun checkIfColliding(
-        firstPolygon: ConvexPolygon,
-        secondPolygon: ConvexPolygon,
+        firstPolygon: ConvexPolygonc,
+        secondPolygon: ConvexPolygonc,
         normals: Iterator<Vector3dc>,
         collisionResult: CollisionResult,
         temp1: CollisionRange,
@@ -21,7 +21,8 @@ object SATConvexPolygonCollider : ConvexPolygonCollider {
         for (normal in normals) {
             // Calculate the overlapping range of the projection of both polygons along the [normal] axis
             val overlappingCollisionRange: CollisionRange = temp3
-            val areRangesOverlapping = computeOverlapAlongNormal(firstPolygon, secondPolygon, normal, overlappingCollisionRange, temp1, temp2)
+            val areRangesOverlapping =
+                computeOverlapAlongNormal(firstPolygon, secondPolygon, normal, overlappingCollisionRange, temp1, temp2)
 
             if (!areRangesOverlapping) {
                 // Polygons are separated along [normal], therefore they are NOT colliding
@@ -42,8 +43,8 @@ object SATConvexPolygonCollider : ConvexPolygonCollider {
 
     @Suppress("MemberVisibilityCanBePrivate")
     fun computeOverlapAlongNormal(
-        firstPolygon: ConvexPolygon,
-        secondPolygon: ConvexPolygon,
+        firstPolygon: ConvexPolygonc,
+        secondPolygon: ConvexPolygonc,
         normal: Vector3dc,
         overlappingCollisionRangeOutput: CollisionRange,
         temp1: CollisionRange,
