@@ -6,7 +6,7 @@ import org.joml.Vector3dc
 /**
  * A [CollisionResult] is used to describe the collision between two polygons.
  */
-class CollisionResult private constructor(
+data class CollisionResult constructor(
     internal var colliding: Boolean,
     internal val minCollisionRange: CollisionRange,
     internal val collisionAxis: Vector3d
@@ -21,7 +21,7 @@ class CollisionResult private constructor(
     }
 
     override fun getCollisionAxis(): Vector3dc {
-        if (!colliding) throw IllegalAccessException("Cannot access collision axisa as we are not colliding.")
+        if (!colliding) throw IllegalAccessException("Cannot access collision axis as we are not colliding.")
         return collisionAxis
     }
 

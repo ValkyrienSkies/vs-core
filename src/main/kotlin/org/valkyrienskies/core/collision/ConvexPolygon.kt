@@ -42,7 +42,7 @@ class ConvexPolygon private constructor(private val points: List<Vector3dc>, pri
             return ConvexPolygon(points, normals)
         }
 
-        fun createFromAABB(aabb: AABBdc, transform: Matrix4dc?): ConvexPolygon {
+        fun createFromAABB(aabb: AABBdc, transform: Matrix4dc? = null): ConvexPolygon {
             val points: List<Vector3d> = listOf(
                 Vector3d(aabb.minX(), aabb.minY(), aabb.minZ()),
                 Vector3d(aabb.minX(), aabb.minY(), aabb.maxZ()),
