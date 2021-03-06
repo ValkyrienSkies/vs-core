@@ -3,10 +3,25 @@ package org.valkyrienskies.core.collision
 import org.joml.Vector3dc
 
 /**
- * An immutable view [CollisionResult].
+ * Interface to view the result of a collision test on two [ConvexPolygonc].
  */
 interface CollisionResultc {
+    /**
+     * @return whether the polygons are colliding or not
+     */
     fun getColliding(): Boolean
-    fun getMinCollisionRange(): CollisionRangec
+
+    /**
+     * This method will throw a [NotCollidingException] when [getColliding] returns false.
+     *
+     * @return the normal with the smallest overlap
+     */
     fun getCollisionAxis(): Vector3dc
+
+    /**
+     * This method will throw a [NotCollidingException] when [getColliding] returns false.
+     *
+     * @return the range of overlap along the normal with the smallest overlap
+     */
+    fun getCollisionRange(): CollisionRangec
 }

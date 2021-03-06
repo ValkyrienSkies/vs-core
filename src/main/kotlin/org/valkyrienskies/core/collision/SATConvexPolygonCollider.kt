@@ -34,14 +34,13 @@ object SATConvexPolygonCollider : ConvexPolygonCollider {
                 if (collisionDepth < minCollisionDepth) {
                     minCollisionDepth = collisionDepth
                     collisionResult.collisionAxis.set(normal)
-                    collisionResult.minCollisionRange.min = overlappingCollisionRange.min
-                    collisionResult.minCollisionRange.max = overlappingCollisionRange.max
+                    collisionResult.collisionRange.min = overlappingCollisionRange.min
+                    collisionResult.collisionRange.max = overlappingCollisionRange.max
                 }
             }
         }
     }
 
-    @Suppress("MemberVisibilityCanBePrivate")
     fun computeOverlapAlongNormal(
         firstPolygon: ConvexPolygonc,
         secondPolygon: ConvexPolygonc,
