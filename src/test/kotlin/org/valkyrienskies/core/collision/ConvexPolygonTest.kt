@@ -31,7 +31,7 @@ internal class ConvexPolygonTest {
 
         convexPolygonImpl.getProjectionAlongAxis(testedNormal, overlappingRange)
 
-        assertEquals(overlappingRange.min, 0.0)
-        assertEquals(overlappingRange.max, 1.0)
+        assertEquals(0.0, overlappingRange.min)
+        assertEquals(1.0, overlappingRange.max)
     }
 }
