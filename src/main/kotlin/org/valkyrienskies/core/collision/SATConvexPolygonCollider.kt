@@ -1,6 +1,7 @@
 package org.valkyrienskies.core.collision
 
 import org.joml.Vector3dc
+import kotlin.math.abs
 
 /**
  * A basic implementation of [ConvexPolygonCollider] using the Separating Axis Theorem algorithm.
@@ -12,53 +13,46 @@ object SATConvexPolygonCollider : ConvexPolygonCollider {
         normals: Iterator<Vector3dc>,
         collisionResult: CollisionResult,
         temp1: CollisionRange,
-        temp2: CollisionRange,
-        temp3: CollisionRange
+        temp2: CollisionRange
     ) {
         var minCollisionDepth = Double.MAX_VALUE
         collisionResult._colliding = true // Initially assume that polygons are collided
 
         for (normal in normals) {
             // Calculate the overlapping range of the projection of both polygons along the [normal] axis
-            val overlappingCollisionRange: CollisionRange = temp3
-            val areRangesOverlapping =
-                computeOverlapAlongNormal(firstPolygon, secondPolygon, normal, overlappingCollisionRange, temp1, temp2)
+            val rangeOverlapResponse =
+                computeCollisionResponseAlongNormal(firstPolygon, secondPolygon, normal, temp1, temp2)
 
-            if (!areRangesOverlapping) {
+            if (rangeOverlapResponse == 0.0) {
                 // Polygons are separated along [normal], therefore they are NOT colliding
                 collisionResult._colliding = false
                 return
             } else {
                 // Polygons are colliding along this axis, doesn't guarantee if the polygons are colliding or not
-                val collisionDepth = overlappingCollisionRange.getRangeLength()
+                val collisionDepth = abs(rangeOverlapResponse)
                 if (collisionDepth < minCollisionDepth) {
                     minCollisionDepth = collisionDepth
                     collisionResult._collisionAxis.set(normal)
-                    collisionResult._collisionRange.min = overlappingCollisionRange.min
-                    collisionResult._collisionRange.max = overlappingCollisionRange.max
+                    collisionResult._penetrationOffset = rangeOverlapResponse
                 }
             }
         }
     }
 
-    fun computeOverlapAlongNormal(
+    fun computeCollisionResponseAlongNormal(
         firstPolygon: ConvexPolygonc,
         secondPolygon: ConvexPolygonc,
         normal: Vector3dc,
-        overlappingCollisionRangeOutput: CollisionRange,
         temp1: CollisionRange,
         temp2: CollisionRange
-    ): Boolean {
+    ): Double {
         // Check if the polygons are separated along the [normal] axis
         val firstCollisionRange: CollisionRangec = firstPolygon.getProjectionAlongAxis(normal, temp1)
         val secondCollisionRange: CollisionRangec = secondPolygon.getProjectionAlongAxis(normal, temp2)
 
-        // Calculate the overlapping range of the projection of both polygons along the [normal] axis
-        val overlappingCollisionRange: CollisionRange = overlappingCollisionRangeOutput
-        return CollisionRangec.computeOverlap(
+        return CollisionRangec.computeCollisionResponse(
             firstCollisionRange,
-            secondCollisionRange,
-            overlappingCollisionRange
+            secondCollisionRange
         )
     }
 }

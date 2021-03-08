@@ -1,5 +1,6 @@
 package org.valkyrienskies.core.collision
 
+import org.joml.Vector3d
 import org.joml.Vector3dc
 
 /**
@@ -21,14 +22,11 @@ interface CollisionResultc {
     /**
      * Accessing this will throw a [NotCollidingException] when [colliding] is false.
      *
-     * @return the range of overlap along the normal with the smallest overlap
+     * @return the penetration offset that moves the first polygon out of the second polygon
      */
-    val collisionRange: CollisionRangec
+    val penetrationOffset: Double
 
-    /**
-     * Accessing this will throw a [NotCollidingException] when [colliding] is false.
-     *
-     * @return the direction to offset the polygon to resolve the collision
-     */
-    val collisionResultDirection: CollisionResultDirection
+    fun getCollisionResponse(dest: Vector3d): Vector3d {
+        return collisionAxis.mul(penetrationOffset, dest)
+    }
 }

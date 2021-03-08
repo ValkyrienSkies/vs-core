@@ -1,7 +1,6 @@
 package org.valkyrienskies.core.collision
 
-import java.lang.Double.max
-import java.lang.Double.min
+import kotlin.math.abs
 
 /**
  * An immutable view of [CollisionRange].
@@ -9,27 +8,27 @@ import java.lang.Double.min
 interface CollisionRangec {
     fun getMin(): Double
     fun getMax(): Double
-    fun getRangeLength() = getMax() - getMin()
 
     companion object {
         /**
-         * If [collisionRange1] and [collisionRange2] are overlapping, then this sets [output] to be that overlap and returns true.
-         *
-         * Otherwise this returns false.
+         * @return The offset we must move [collisionRange1] such that it is no longer overlapping with [collisionRange2]. If [collisionRange1] and [collisionRange2] are not overlapping then this returns 0.
          */
-        fun computeOverlap(
+        fun computeCollisionResponse(
             collisionRange1: CollisionRangec,
-            collisionRange2: CollisionRangec,
-            output: CollisionRange
-        ): Boolean {
-            val maxOfMins = max(collisionRange1.getMin(), collisionRange2.getMin())
-            val minOfMaxs = min(collisionRange1.getMax(), collisionRange2.getMax())
-            return if (maxOfMins <= minOfMaxs) {
-                output.min = maxOfMins
-                output.max = minOfMaxs
-                true
+            collisionRange2: CollisionRangec
+        ): Double {
+            val pushLeft = -collisionRange1.getMax() + collisionRange2.getMin()
+            val pushRight = -collisionRange1.getMin() + collisionRange2.getMax()
+
+            return if (pushRight <= 0 || pushLeft >= 0) {
+                // Not overlapping
+                0.0
+            } else if (abs(pushRight) < abs(pushLeft)) {
+                // Its more efficient to push [collisionRange1] left
+                pushRight
             } else {
-                false
+                // Its more efficient to push [collisionRange1] right
+                pushLeft
             }
         }
     }

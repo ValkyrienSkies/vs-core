@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.valkyrienskies.core.collision.CollisionResultDirection.SAME_AS_AXIS
 
 internal class SATConvexPolygonColliderTest {
 
@@ -16,22 +15,21 @@ internal class SATConvexPolygonColliderTest {
      */
     @Test
     fun checkIfColliding() {
+        // The optimal collision response is to move firstPolygon by (0, -0.1, 0)
         val firstPolygon: ConvexPolygonc = ConvexPolygon.createFromAABB(AABBd(0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
-        val secondPolygon: ConvexPolygonc = ConvexPolygon.createFromAABB(AABBd(0.0, 0.5, 0.0, 1.0, 1.0, 1.0))
+        val secondPolygon: ConvexPolygonc = ConvexPolygon.createFromAABB(AABBd(0.0, 0.9, 0.0, 1.0, 1.0, 1.0))
         val normals: List<Vector3dc> = listOf(Vector3d(1.0, 0.0, 0.0), Vector3d(0.0, 1.0, 0.0), Vector3d(0.0, 0.0, 1.0))
         val collisionResult: CollisionResult = CollisionResult.create()
         val temp1: CollisionRange = CollisionRange.create()
         val temp2: CollisionRange = CollisionRange.create()
-        val temp3: CollisionRange = CollisionRange.create()
 
         SATConvexPolygonCollider.checkIfColliding(
-            firstPolygon, secondPolygon, normals.iterator(), collisionResult, temp1, temp2, temp3
+            firstPolygon, secondPolygon, normals.iterator(), collisionResult, temp1, temp2
         )
 
         assertTrue(collisionResult.colliding)
-        assertEquals(
-            CollisionResult(true, CollisionRange(0.5, 1.0), Vector3d(0.0, 1.0, 0.0), SAME_AS_AXIS), collisionResult
-        )
+        assertEquals(Vector3d(0.0, 1.0, 0.0), collisionResult._collisionAxis)
+        assertEquals(-0.1, collisionResult.penetrationOffset, EPSILON)
     }
 
     /**
@@ -45,10 +43,9 @@ internal class SATConvexPolygonColliderTest {
         val collisionResult: CollisionResult = CollisionResult.create()
         val temp1: CollisionRange = CollisionRange.create()
         val temp2: CollisionRange = CollisionRange.create()
-        val temp3: CollisionRange = CollisionRange.create()
 
         SATConvexPolygonCollider.checkIfColliding(
-            firstPolygon, secondPolygon, normals.iterator(), collisionResult, temp1, temp2, temp3
+            firstPolygon, secondPolygon, normals.iterator(), collisionResult, temp1, temp2
         )
 
         assertFalse(collisionResult.colliding)
@@ -59,18 +56,22 @@ internal class SATConvexPolygonColliderTest {
      */
     @Test
     fun computeOverlapAlongNormal() {
-        val firstPolygon: ConvexPolygonc = ConvexPolygon.createFromAABB(AABBd(0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
-        val secondPolygon: ConvexPolygonc = ConvexPolygon.createFromAABB(AABBd(0.0, 0.5, 0.0, 1.0, 1.0, 1.0))
+        // The optimal collision response is to move firstPolygon by (0, 0.2, 0)
+        val firstPolygon: ConvexPolygonc = ConvexPolygon.createFromAABB(AABBd(0.0, 0.8, 0.0, 1.0, 1.0, 1.0))
+        val secondPolygon: ConvexPolygonc = ConvexPolygon.createFromAABB(AABBd(0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
         val normal: Vector3dc = Vector3d(0.0, 1.0, 0.0)
-        val collisionRangeOutput: CollisionRange = CollisionRange.create()
         val temp1: CollisionRange = CollisionRange.create()
         val temp2: CollisionRange = CollisionRange.create()
 
-        val collidingAlongNormal = SATConvexPolygonCollider.computeOverlapAlongNormal(
-            firstPolygon, secondPolygon, normal, collisionRangeOutput, temp1, temp2
+        val collisionResponse = SATConvexPolygonCollider.computeCollisionResponseAlongNormal(
+            firstPolygon, secondPolygon, normal, temp1, temp2
         )
 
-        assertTrue(collidingAlongNormal)
-        assertEquals(CollisionRange.create(0.5, 1.0), collisionRangeOutput)
+        assertEquals(0.2, collisionResponse, EPSILON)
+    }
+
+    companion object {
+        // The epsilon we use to check if two floating point numbers are equal, to account for floating point error
+        private const val EPSILON = 1e-8
     }
 }
