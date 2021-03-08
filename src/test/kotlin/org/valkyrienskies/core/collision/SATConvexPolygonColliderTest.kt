@@ -16,8 +16,10 @@ internal class SATConvexPolygonColliderTest {
     @Test
     fun checkIfColliding() {
         // The optimal collision response is to move firstPolygon by (0, -0.1, 0)
-        val firstPolygon: ConvexPolygonc = ConvexPolygon.createFromAABB(AABBd(0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
-        val secondPolygon: ConvexPolygonc = ConvexPolygon.createFromAABB(AABBd(0.0, 0.9, 0.0, 1.0, 1.0, 1.0))
+        val firstPolygon: ConvexPolygonc =
+            TransformedCuboidPolygon.createFromAABB(AABBd(0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
+        val secondPolygon: ConvexPolygonc =
+            TransformedCuboidPolygon.createFromAABB(AABBd(0.0, 0.9, 0.0, 1.0, 1.0, 1.0))
         val normals: List<Vector3dc> = listOf(Vector3d(1.0, 0.0, 0.0), Vector3d(0.0, 1.0, 0.0), Vector3d(0.0, 0.0, 1.0))
         val collisionResult: CollisionResult = CollisionResult.create()
         val temp1: CollisionRange = CollisionRange.create()
@@ -37,8 +39,10 @@ internal class SATConvexPolygonColliderTest {
      */
     @Test
     fun checkIfColliding2() {
-        val firstPolygon: ConvexPolygonc = ConvexPolygon.createFromAABB(AABBd(0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
-        val secondPolygon: ConvexPolygonc = ConvexPolygon.createFromAABB(AABBd(2.0, 0.0, 0.0, 3.0, 1.0, 1.0))
+        val firstPolygon: ConvexPolygonc =
+            TransformedCuboidPolygon.createFromAABB(AABBd(0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
+        val secondPolygon: ConvexPolygonc =
+            TransformedCuboidPolygon.createFromAABB(AABBd(2.0, 0.0, 0.0, 3.0, 1.0, 1.0))
         val normals: List<Vector3dc> = listOf(Vector3d(1.0, 0.0, 0.0), Vector3d(0.0, 1.0, 0.0), Vector3d(0.0, 0.0, 1.0))
         val collisionResult: CollisionResult = CollisionResult.create()
         val temp1: CollisionRange = CollisionRange.create()
@@ -57,8 +61,10 @@ internal class SATConvexPolygonColliderTest {
     @Test
     fun computeOverlapAlongNormal() {
         // The optimal collision response is to move firstPolygon by (0, 0.2, 0)
-        val firstPolygon: ConvexPolygonc = ConvexPolygon.createFromAABB(AABBd(0.0, 0.8, 0.0, 1.0, 1.0, 1.0))
-        val secondPolygon: ConvexPolygonc = ConvexPolygon.createFromAABB(AABBd(0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
+        val firstPolygon: ConvexPolygonc =
+            TransformedCuboidPolygon.createFromAABB(AABBd(0.0, 0.8, 0.0, 1.0, 1.0, 1.0))
+        val secondPolygon: ConvexPolygonc =
+            TransformedCuboidPolygon.createFromAABB(AABBd(0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
         val normal: Vector3dc = Vector3d(0.0, 1.0, 0.0)
         val temp1: CollisionRange = CollisionRange.create()
         val temp2: CollisionRange = CollisionRange.create()
