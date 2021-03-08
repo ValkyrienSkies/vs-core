@@ -22,8 +22,8 @@ interface ConvexPolygonc {
             maxProjection = java.lang.Double.max(maxProjection, projection)
         }
 
-        output.min = minProjection
-        output.max = maxProjection
+        output._min = minProjection
+        output._max = maxProjection
 
         return output
     }

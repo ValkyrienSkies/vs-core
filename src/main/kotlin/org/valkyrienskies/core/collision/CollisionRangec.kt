@@ -6,8 +6,8 @@ import kotlin.math.abs
  * An immutable view of [CollisionRange].
  */
 interface CollisionRangec {
-    fun getMin(): Double
-    fun getMax(): Double
+    val min: Double
+    val max: Double
 
     companion object {
         /**
@@ -17,8 +17,8 @@ interface CollisionRangec {
             collisionRange1: CollisionRangec,
             collisionRange2: CollisionRangec
         ): Double {
-            val pushLeft = -collisionRange1.getMax() + collisionRange2.getMin()
-            val pushRight = -collisionRange1.getMin() + collisionRange2.getMax()
+            val pushLeft = -collisionRange1.max + collisionRange2.min
+            val pushRight = -collisionRange1.min + collisionRange2.max
 
             return if (pushRight <= 0 || pushLeft >= 0) {
                 // Not overlapping
