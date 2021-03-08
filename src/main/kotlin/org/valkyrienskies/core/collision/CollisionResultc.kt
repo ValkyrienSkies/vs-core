@@ -24,4 +24,11 @@ interface CollisionResultc {
      * @return the range of overlap along the normal with the smallest overlap
      */
     fun getCollisionRange(): CollisionRangec
+
+    /**
+     * This method will throw a [NotCollidingException] when [getColliding] returns false.
+     *
+     * @return the direction to offset the polygon to resolve the collision
+     */
+    fun getCollisionResultDirection(): CollisionResultDirection
 }
