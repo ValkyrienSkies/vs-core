@@ -16,7 +16,7 @@ object SATConvexPolygonCollider : ConvexPolygonCollider {
         temp3: CollisionRange
     ) {
         var minCollisionDepth = Double.MAX_VALUE
-        collisionResult.colliding = true // Initially assume that polygons are collided
+        collisionResult._colliding = true // Initially assume that polygons are collided
 
         for (normal in normals) {
             // Calculate the overlapping range of the projection of both polygons along the [normal] axis
@@ -26,16 +26,16 @@ object SATConvexPolygonCollider : ConvexPolygonCollider {
 
             if (!areRangesOverlapping) {
                 // Polygons are separated along [normal], therefore they are NOT colliding
-                collisionResult.colliding = false
+                collisionResult._colliding = false
                 return
             } else {
                 // Polygons are colliding along this axis, doesn't guarantee if the polygons are colliding or not
                 val collisionDepth = overlappingCollisionRange.getRangeLength()
                 if (collisionDepth < minCollisionDepth) {
                     minCollisionDepth = collisionDepth
-                    collisionResult.collisionAxis.set(normal)
-                    collisionResult.collisionRange.min = overlappingCollisionRange.min
-                    collisionResult.collisionRange.max = overlappingCollisionRange.max
+                    collisionResult._collisionAxis.set(normal)
+                    collisionResult._collisionRange.min = overlappingCollisionRange.min
+                    collisionResult._collisionRange.max = overlappingCollisionRange.max
                 }
             }
         }

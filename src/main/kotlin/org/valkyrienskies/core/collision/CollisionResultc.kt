@@ -9,26 +9,26 @@ interface CollisionResultc {
     /**
      * @return whether the polygons are colliding or not
      */
-    fun getColliding(): Boolean
+    val colliding: Boolean
 
     /**
-     * This method will throw a [NotCollidingException] when [getColliding] returns false.
+     * Accessing this will throw a [NotCollidingException] when [colliding] is false.
      *
      * @return the normal with the smallest overlap
      */
-    fun getCollisionAxis(): Vector3dc
+    val collisionAxis: Vector3dc
 
     /**
-     * This method will throw a [NotCollidingException] when [getColliding] returns false.
+     * Accessing this will throw a [NotCollidingException] when [colliding] is false.
      *
      * @return the range of overlap along the normal with the smallest overlap
      */
-    fun getCollisionRange(): CollisionRangec
+    val collisionRange: CollisionRangec
 
     /**
-     * This method will throw a [NotCollidingException] when [getColliding] returns false.
+     * Accessing this will throw a [NotCollidingException] when [colliding] is false.
      *
      * @return the direction to offset the polygon to resolve the collision
      */
-    fun getCollisionResultDirection(): CollisionResultDirection
+    val collisionResultDirection: CollisionResultDirection
 }

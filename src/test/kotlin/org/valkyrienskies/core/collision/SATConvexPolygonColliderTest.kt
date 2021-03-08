@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.valkyrienskies.core.collision.CollisionResultDirection.SAME_AS_AXIS
 
 internal class SATConvexPolygonColliderTest {
 
@@ -28,7 +29,9 @@ internal class SATConvexPolygonColliderTest {
         )
 
         assertTrue(collisionResult.colliding)
-        assertEquals(CollisionResult(true, CollisionRange(0.5, 1.0), Vector3d(0.0, 1.0, 0.0)), collisionResult)
+        assertEquals(
+            CollisionResult(true, CollisionRange(0.5, 1.0), Vector3d(0.0, 1.0, 0.0), SAME_AS_AXIS), collisionResult
+        )
     }
 
     /**
