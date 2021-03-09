@@ -33,7 +33,7 @@ class TransformedCuboidPolygon private constructor(
 
         if (transform != null) {
             for (point in _points) transform.transformPosition(point)
-            for (normal in _normals) transform.transformDirection(normal)
+            for (normal in _normals) transform.transformDirection(normal).normalize()
         }
         return this
     }
