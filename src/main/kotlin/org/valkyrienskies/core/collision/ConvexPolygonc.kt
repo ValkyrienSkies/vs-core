@@ -18,8 +18,8 @@ interface ConvexPolygonc {
 
         for (point in points) {
             val projection = point.dot(normalAxis)
-            minProjection = java.lang.Double.min(minProjection, projection)
-            maxProjection = java.lang.Double.max(maxProjection, projection)
+            minProjection = min(minProjection, projection)
+            maxProjection = max(maxProjection, projection)
         }
 
         output._min = minProjection
