@@ -15,10 +15,11 @@ interface CollisionRangec {
          */
         fun computeCollisionResponse(
             collisionRange1: CollisionRangec,
-            collisionRange2: CollisionRangec
+            collisionRange2: CollisionRangec,
+            collisionRange1Velocity: Double = 0.0
         ): Double {
-            val pushLeft = -collisionRange1.max + collisionRange2.min
-            val pushRight = -collisionRange1.min + collisionRange2.max
+            val pushLeft = -collisionRange1.max + collisionRange2.min - collisionRange1Velocity
+            val pushRight = -collisionRange1.min + collisionRange2.max - collisionRange1Velocity
 
             return if (pushRight <= 0 || pushLeft >= 0) {
                 // Not overlapping

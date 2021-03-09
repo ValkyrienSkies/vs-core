@@ -26,7 +26,7 @@ internal class SATConvexPolygonColliderTest {
         val temp2: CollisionRange = CollisionRange.create()
 
         SATConvexPolygonCollider.checkIfColliding(
-            firstPolygon, secondPolygon, normals.iterator(), collisionResult, temp1, temp2
+            firstPolygon, secondPolygon, Vector3d(), normals.iterator(), collisionResult, temp1, temp2
         )
 
         assertTrue(collisionResult.colliding)
@@ -49,7 +49,7 @@ internal class SATConvexPolygonColliderTest {
         val temp2: CollisionRange = CollisionRange.create()
 
         SATConvexPolygonCollider.checkIfColliding(
-            firstPolygon, secondPolygon, normals.iterator(), collisionResult, temp1, temp2
+            firstPolygon, secondPolygon, Vector3d(), normals.iterator(), collisionResult, temp1, temp2
         )
 
         assertFalse(collisionResult.colliding)
@@ -70,7 +70,7 @@ internal class SATConvexPolygonColliderTest {
         val temp2: CollisionRange = CollisionRange.create()
 
         val collisionResponse = SATConvexPolygonCollider.computeCollisionResponseAlongNormal(
-            firstPolygon, secondPolygon, normal, temp1, temp2
+            firstPolygon, secondPolygon, Vector3d(), normal, temp1, temp2
         )
 
         assertEquals(0.2, collisionResponse, EPSILON)

@@ -10,6 +10,7 @@ object SATConvexPolygonCollider : ConvexPolygonCollider {
     override fun checkIfColliding(
         firstPolygon: ConvexPolygonc,
         secondPolygon: ConvexPolygonc,
+        firstPolygonVelocity: Vector3dc,
         normals: Iterator<Vector3dc>,
         collisionResult: CollisionResult,
         temp1: CollisionRange,
@@ -21,7 +22,9 @@ object SATConvexPolygonCollider : ConvexPolygonCollider {
         for (normal in normals) {
             // Calculate the overlapping range of the projection of both polygons along the [normal] axis
             val rangeOverlapResponse =
-                computeCollisionResponseAlongNormal(firstPolygon, secondPolygon, normal, temp1, temp2)
+                computeCollisionResponseAlongNormal(
+                    firstPolygon, secondPolygon, firstPolygonVelocity, normal, temp1, temp2
+                )
 
             if (rangeOverlapResponse == 0.0) {
                 // Polygons are separated along [normal], therefore they are NOT colliding
@@ -42,6 +45,7 @@ object SATConvexPolygonCollider : ConvexPolygonCollider {
     fun computeCollisionResponseAlongNormal(
         firstPolygon: ConvexPolygonc,
         secondPolygon: ConvexPolygonc,
+        firstPolygonVelocity: Vector3dc,
         normal: Vector3dc,
         temp1: CollisionRange,
         temp2: CollisionRange
@@ -49,10 +53,12 @@ object SATConvexPolygonCollider : ConvexPolygonCollider {
         // Check if the polygons are separated along the [normal] axis
         val firstCollisionRange: CollisionRangec = firstPolygon.getProjectionAlongAxis(normal, temp1)
         val secondCollisionRange: CollisionRangec = secondPolygon.getProjectionAlongAxis(normal, temp2)
+        val firstRangeVelocityAlongNormal = firstPolygonVelocity.dot(normal)
 
         return CollisionRangec.computeCollisionResponse(
             firstCollisionRange,
-            secondCollisionRange
+            secondCollisionRange,
+            firstRangeVelocityAlongNormal
         )
     }
 }

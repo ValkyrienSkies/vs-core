@@ -16,6 +16,7 @@ interface ConvexPolygonCollider {
     fun checkIfColliding(
         firstPolygon: ConvexPolygonc,
         secondPolygon: ConvexPolygonc,
+        firstPolygonVelocity: Vector3dc,
         normals: Iterator<Vector3dc>,
         collisionResult: CollisionResult,
         temp1: CollisionRange,
