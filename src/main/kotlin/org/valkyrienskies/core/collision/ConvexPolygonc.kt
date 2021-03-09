@@ -13,8 +13,8 @@ interface ConvexPolygonc {
     val normals: Iterable<Vector3dc>
 
     fun getProjectionAlongAxis(normalAxis: Vector3dc, output: CollisionRange): CollisionRange {
-        var minProjection = Double.MAX_VALUE
-        var maxProjection = Double.MIN_VALUE
+        var minProjection = Double.POSITIVE_INFINITY
+        var maxProjection = Double.NEGATIVE_INFINITY
 
         for (point in points) {
             val projection = point.dot(normalAxis)
