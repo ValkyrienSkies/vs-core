@@ -27,7 +27,7 @@ object SATConvexPolygonCollider : ConvexPolygonCollider {
                     firstPolygon, secondPolygon, firstPolygonVelocity, normal, temp1, temp2
                 )
 
-            if (rangeOverlapResponse == 0.0) {
+            if (abs(rangeOverlapResponse) < 1.0e-6) {
                 // Polygons are separated along [normal], therefore they are NOT colliding
                 collisionResult._colliding = false
                 return
