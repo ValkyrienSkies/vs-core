@@ -18,24 +18,27 @@ interface CollisionRangec {
             collisionRange2: CollisionRangec,
             collisionRange1Velocity: Double = 0.0
         ): Double {
-            var pushLeft = -collisionRange1.max + collisionRange2.min
-            var pushRight = -collisionRange1.min + collisionRange2.max
+            val pushLeft = -collisionRange1.max + collisionRange2.min
+            val pushRight = -collisionRange1.min + collisionRange2.max
+
+            var pushLeftWithRespectToVelocity = -collisionRange1.max + collisionRange2.min
+            var pushRightWithRespectToVelocity = -collisionRange1.min + collisionRange2.max
 
             if (collisionRange1Velocity > 0) {
-                pushLeft -= collisionRange1Velocity
+                pushLeftWithRespectToVelocity -= collisionRange1Velocity
             } else {
-                pushRight -= collisionRange1Velocity
+                pushRightWithRespectToVelocity -= collisionRange1Velocity
             }
 
-            return if (pushRight <= 0 || pushLeft >= 0) {
+            return if (pushRightWithRespectToVelocity <= 0 || pushLeftWithRespectToVelocity >= 0) {
                 // Not overlapping
                 0.0
-            } else if (abs(pushRight) < abs(pushLeft)) {
+            } else if (abs(pushLeft) > abs(pushRight)) {
                 // Its more efficient to push [collisionRange1] left
-                pushRight
+                pushRightWithRespectToVelocity
             } else {
                 // Its more efficient to push [collisionRange1] right
-                pushLeft
+                pushLeftWithRespectToVelocity
             }
         }
     }
