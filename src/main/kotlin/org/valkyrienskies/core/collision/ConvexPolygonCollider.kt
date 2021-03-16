@@ -20,6 +20,7 @@ interface ConvexPolygonCollider {
         normals: Iterator<Vector3dc>,
         collisionResult: CollisionResult,
         temp1: CollisionRange,
-        temp2: CollisionRange
+        temp2: CollisionRange,
+        forcedResponseNormal: Vector3dc? = null
     )
 }

@@ -14,7 +14,8 @@ object SATConvexPolygonCollider : ConvexPolygonCollider {
         normals: Iterator<Vector3dc>,
         collisionResult: CollisionResult,
         temp1: CollisionRange,
-        temp2: CollisionRange
+        temp2: CollisionRange,
+        forcedResponseNormal: Vector3dc?
     ) {
         var minCollisionDepth = Double.MAX_VALUE
         collisionResult._colliding = true // Initially assume that polygons are collided
@@ -31,15 +32,31 @@ object SATConvexPolygonCollider : ConvexPolygonCollider {
                 collisionResult._colliding = false
                 return
             } else {
-                // Polygons are colliding along this axis, doesn't guarantee if the polygons are colliding or not
-                val collisionDepth = abs(rangeOverlapResponse)
-                if (collisionDepth < minCollisionDepth) {
-                    minCollisionDepth = collisionDepth
-                    collisionResult._collisionAxis.set(normal)
-                    collisionResult._penetrationOffset = rangeOverlapResponse
+                if (forcedResponseNormal != null) {
+                    val dotProduct = forcedResponseNormal.dot(normal)
+                    if (abs(dotProduct) < 1e-6) continue // Skip
+                    val modifiedRangeOverlapResponse = rangeOverlapResponse / dotProduct
+
+                    // Polygons are colliding along this axis, doesn't guarantee if the polygons are colliding or not
+                    val collisionDepth = abs(modifiedRangeOverlapResponse)
+                    if (collisionDepth < minCollisionDepth) {
+                        minCollisionDepth = collisionDepth
+                        collisionResult._collisionAxis.set(forcedResponseNormal)
+                        collisionResult._penetrationOffset = modifiedRangeOverlapResponse
+                    }
+                } else {
+                    // Polygons are colliding along this axis, doesn't guarantee if the polygons are colliding or not
+                    val collisionDepth = abs(rangeOverlapResponse)
+                    if (collisionDepth < minCollisionDepth) {
+                        minCollisionDepth = collisionDepth
+                        collisionResult._collisionAxis.set(normal)
+                        collisionResult._penetrationOffset = rangeOverlapResponse
+                    }
                 }
             }
         }
+
+        if (minCollisionDepth == Double.MAX_VALUE) collisionResult._colliding = false
     }
 
     fun computeCollisionResponseAlongNormal(
