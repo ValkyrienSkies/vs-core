@@ -67,8 +67,8 @@ object EntityPolygonCollider {
         val collisionResponseAssumingFullStepHorizontalSpeedSq = collisionResponseAssumingFullStep.horizontalLengthSq()
 
         // Only choose [collisionResponseAssumingFullStep] if it has a larger horizontal speed than [collisionResponseAssumingNoStep]
-        if (collisionResponseAssumingFullStepHorizontalSpeedSq >= collisionResponseAssumingNoStepHorizontalSpeedSq
-            && collisionResponseAssumingFullStepHorizontalSpeedSq >= originalMovementSpeedSq
+        if (collisionResponseAssumingFullStepHorizontalSpeedSq >= collisionResponseAssumingNoStepHorizontalSpeedSq &&
+            collisionResponseAssumingFullStepHorizontalSpeedSq >= originalMovementSpeedSq
         ) {
             // Now that we've chosen [collisionResponseAssumingFullStep], move the entity downwards such that it is still on the ground
             val entityAfterSteppingFullyPolygon: ConvexPolygonc =
@@ -288,14 +288,14 @@ object EntityPolygonCollider {
                     val originalVelocityAlongNormal = collisionNormal.dot(originalVelX, originalVelY, originalVelZ)
 
                     if (originalVelocityAlongNormal < 0) {
-                        if (netVelocityAlongNormal < velocityChangeTolerance
-                            && netVelocityAlongNormal > originalVelocityAlongNormal - velocityChangeTolerance
+                        if (netVelocityAlongNormal < velocityChangeTolerance &&
+                            netVelocityAlongNormal > originalVelocityAlongNormal - velocityChangeTolerance
                         ) {
                             newEntityVelocity.add(collisionResponse)
                         }
                     } else {
-                        if (netVelocityAlongNormal > -velocityChangeTolerance
-                            && netVelocityAlongNormal < originalVelocityAlongNormal + velocityChangeTolerance
+                        if (netVelocityAlongNormal > -velocityChangeTolerance &&
+                            netVelocityAlongNormal < originalVelocityAlongNormal + velocityChangeTolerance
                         ) {
                             newEntityVelocity.add(collisionResponse)
                         }
