@@ -22,9 +22,19 @@ object EntityPolygonCollider {
     ): Vector3dc {
         val originalMovement: Vector3dc = movement
 
+        // Determine if the entity is standing on the polygons
+        val isEntityStandingOnPolygons =
+            isEntityStandingOnPolygons(
+                TransformedCuboidPolygon.createFromAABB(entityBoundingBox, null), originalMovement, collidingPolygons
+            )
+
         // Compute the collision response assuming the entity can't step
-        val collisionResponseAssumingNoStep =
+        val collisionResponseAssumingNoStep: Vector3dc = if (isEntityStandingOnPolygons) {
             adjustMovementComponentWise(entityBoundingBox, originalMovement, collidingPolygons)
+        } else {
+            // If not standing use "sticky" to prevent entity climbing up walls
+            adjustMovementComponentWiseSticky(entityBoundingBox, originalMovement, collidingPolygons)
+        }
 
         // If [entityStepHeight] is 0 then it can't step
         if (entityStepHeight == 0.0) {
@@ -35,12 +45,6 @@ object EntityPolygonCollider {
         if (movement.x() * movement.x() + movement.z() * movement.z() < 1e-4) {
             return collisionResponseAssumingNoStep
         }
-
-        // Determine if the entity is standing on the polygons
-        val isEntityStandingOnPolygons =
-            isEntityStandingOnPolygons(
-                TransformedCuboidPolygon.createFromAABB(entityBoundingBox, null), originalMovement, collidingPolygons
-            )
 
         // If the entity is not standing on the polygons then it can't step
         if (!isEntityStandingOnPolygons) {
@@ -89,6 +93,32 @@ object EntityPolygonCollider {
      * @return [entityVelocity] modified such that the entity is colliding with [collidingPolygons], with the Y-axis prioritized
      */
     private fun adjustMovementComponentWise(
+        entityBoundingBox: AABBdc, entityVelocity: Vector3dc, collidingPolygons: List<ConvexPolygonc>
+    ): Vector3dc {
+        val entityPolygon: ConvexPolygonc = TransformedCuboidPolygon.createFromAABB(entityBoundingBox, null)
+
+        // First collide along the y-axis
+        val yOnlyResponse = adjustMovement(
+            entityPolygon, Vector3d(0.0, entityVelocity.y(), 0.0), collidingPolygons, true, UNIT_NORMALS[1]
+        )
+
+        entityPolygon.points.forEach {
+            it as Vector3d
+            it.add(yOnlyResponse)
+        }
+
+        // Then collide along the x-axis
+        val horizontalResponse = adjustMovement(
+            entityPolygon, Vector3d(entityVelocity.x(), 0.0, entityVelocity.z()), collidingPolygons, true
+        )
+
+        return Vector3d(horizontalResponse.x(), yOnlyResponse.y(), horizontalResponse.z())
+    }
+
+    /**
+     * Similar to [adjustMovementComponentWise], except its sticky because entities get stuck along the wall
+     */
+    private fun adjustMovementComponentWiseSticky(
         entityBoundingBox: AABBdc, entityVelocity: Vector3dc, collidingPolygons: List<ConvexPolygonc>
     ): Vector3dc {
         val entityPolygon: ConvexPolygonc = TransformedCuboidPolygon.createFromAABB(entityBoundingBox, null)
