@@ -42,6 +42,7 @@ val Vector3dc.z get() = z()
 
 fun Vector3dc.multiplyTerms() = x * y * z
 fun Vector3dc.addTerms() = x + y + z
+fun Vector3dc.horizontalLengthSq() = x * x + z * z
 
 // Matrix4dc
 fun Matrix4dc.toGDX() = Matrix4() set this

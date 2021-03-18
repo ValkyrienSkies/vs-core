@@ -4,6 +4,7 @@ import org.joml.Vector3d
 import org.joml.Vector3dc
 import org.joml.primitives.AABBd
 import org.joml.primitives.AABBdc
+import org.valkyrienskies.core.util.horizontalLengthSq
 import java.util.ArrayList
 
 object EntityPolygonCollider {
@@ -42,7 +43,7 @@ object EntityPolygonCollider {
         }
 
         // If the entity is not moving horizontally then it can't step
-        if (movement.x() * movement.x() + movement.z() * movement.z() < 1e-4) {
+        if (movement.horizontalLengthSq() < 1e-4) {
             return collisionResponseAssumingNoStep
         }
 
@@ -59,22 +60,24 @@ object EntityPolygonCollider {
                 collidingPolygons
             )
 
-        val originalMovementSpeedSq =
-            originalMovement.x() * originalMovement.x() + originalMovement.z() * originalMovement.z()
-        val collisionResponseAssumingNoStepHorizontalSpeedSq =
-            collisionResponseAssumingNoStep.x() * collisionResponseAssumingNoStep.x() + collisionResponseAssumingNoStep.z() * collisionResponseAssumingNoStep.z()
-        val collisionResponseAssumingFullStepHorizontalSpeedSq =
-            collisionResponseAssumingFullStep.x() * collisionResponseAssumingFullStep.x() + collisionResponseAssumingFullStep.z() * collisionResponseAssumingFullStep.z()
+        val originalMovementSpeedSq = originalMovement.horizontalLengthSq()
+
+        val collisionResponseAssumingNoStepHorizontalSpeedSq = collisionResponseAssumingNoStep.horizontalLengthSq()
+
+        val collisionResponseAssumingFullStepHorizontalSpeedSq = collisionResponseAssumingFullStep.horizontalLengthSq()
 
         // Only choose [collisionResponseAssumingFullStep] if it has a larger horizontal speed than [collisionResponseAssumingNoStep]
-        if (collisionResponseAssumingFullStepHorizontalSpeedSq >= collisionResponseAssumingNoStepHorizontalSpeedSq && collisionResponseAssumingFullStepHorizontalSpeedSq >= originalMovementSpeedSq) {
+        if (collisionResponseAssumingFullStepHorizontalSpeedSq >= collisionResponseAssumingNoStepHorizontalSpeedSq
+            && collisionResponseAssumingFullStepHorizontalSpeedSq >= originalMovementSpeedSq
+        ) {
             // Now that we've chosen [collisionResponseAssumingFullStep], move the entity downwards such that it is still on the ground
             val entityAfterSteppingFullyPolygon: ConvexPolygonc =
                 TransformedCuboidPolygon.createFromAABB(
                     entityBoundingBox.translate(
                         collisionResponseAssumingFullStep.x(), collisionResponseAssumingFullStep.y(),
                         collisionResponseAssumingFullStep.z(), AABBd()
-                    ), null
+                    ),
+                    null
                 )
             val fixStepUpResponse = adjustMovement(
                 entityAfterSteppingFullyPolygon,
@@ -285,11 +288,15 @@ object EntityPolygonCollider {
                     val originalVelocityAlongNormal = collisionNormal.dot(originalVelX, originalVelY, originalVelZ)
 
                     if (originalVelocityAlongNormal < 0) {
-                        if (netVelocityAlongNormal < velocityChangeTolerance && netVelocityAlongNormal > originalVelocityAlongNormal - velocityChangeTolerance) {
+                        if (netVelocityAlongNormal < velocityChangeTolerance
+                            && netVelocityAlongNormal > originalVelocityAlongNormal - velocityChangeTolerance
+                        ) {
                             newEntityVelocity.add(collisionResponse)
                         }
                     } else {
-                        if (netVelocityAlongNormal > -velocityChangeTolerance && netVelocityAlongNormal < originalVelocityAlongNormal + velocityChangeTolerance) {
+                        if (netVelocityAlongNormal > -velocityChangeTolerance
+                            && netVelocityAlongNormal < originalVelocityAlongNormal + velocityChangeTolerance
+                        ) {
                             newEntityVelocity.add(collisionResponse)
                         }
                     }
