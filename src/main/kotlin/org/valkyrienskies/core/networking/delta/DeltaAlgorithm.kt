@@ -13,7 +13,7 @@ interface DeltaAlgorithm<T> {
 
     /**
      * Takes the [old] and the [delta], generated from [encode], and produces the "new" T.
-     * This method may or may not mutate [old].
+     * This method must not mutate [old].
      */
     fun apply(old: T, delta: ByteBuf): T
 }

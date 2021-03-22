@@ -7,6 +7,8 @@ import java.nio.ByteBuffer
 fun asLong(x: Int, y: Int): Long = x.toLong() or (y.toLong() shl 32)
 fun asInts(x: Long): Pair<Int, Int> = Pair(x.toInt(), (x shr 32).toInt())
 
+fun Short.toIntUnsigned() = this.toInt() and 0xffff
+
 inline fun Byte.iterateBits(func: (Boolean, Int) -> Unit) {
     for (i in 8 downTo 0) {
         val masked = (this.toInt() and (1 shl i))
