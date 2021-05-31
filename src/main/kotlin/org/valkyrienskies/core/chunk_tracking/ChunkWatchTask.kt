@@ -1,6 +1,6 @@
 package org.valkyrienskies.core.chunk_tracking
 
-import org.valkyrienskies.core.game.IPlayer
+import org.valkyrienskies.core.game.bridge.IPlayer
 
 /**
  * This task says that [playersNeedWatching] should be watching the chunk at [chunkPos].

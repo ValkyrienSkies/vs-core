@@ -1,9 +1,7 @@
 package org.valkyrienskies.core.game.ships
 
 import org.joml.Matrix3d
-import org.joml.Matrix3dc
 import org.joml.Vector3d
-import org.joml.Vector3dc
 import kotlin.math.abs
 
 /**
@@ -43,13 +41,13 @@ data class ShipInertiaData(
     private fun addMassAt(x: Double, y: Double, z: Double, addedMass: Double) {
         // Put the moment of inertia tensor into a double array
         val gameMoITensor = DoubleArray(9)
-        val transposed: Matrix3d = getMomentOfInertiaTensor().transpose(Matrix3d())
+        val transposed: Matrix3d = momentOfInertiaTensor.transpose(Matrix3d())
         transposed.get(gameMoITensor)
 
-        val gameTickMass: Double = getShipMass()
-        val prevCenterOfMass = Vector3d(getCenterOfMassInShipSpace())
+        val gameTickMass: Double = shipMass
+        val prevCenterOfMass = Vector3d(centerOfMassInShipSpace)
         if (gameTickMass > EPSILON) {
-            val newCenterOfMass: Vector3d = getCenterOfMassInShipSpace().mul(gameTickMass, Vector3d())
+            val newCenterOfMass: Vector3d = centerOfMassInShipSpace.mul(gameTickMass, Vector3d())
             newCenterOfMass.add(x * addedMass, y * addedMass, z * addedMass)
             newCenterOfMass.mul(1.0 / (gameTickMass + addedMass))
             centerOfMassInShipSpace.set(newCenterOfMass)
@@ -59,12 +57,12 @@ data class ShipInertiaData(
         }
 
         // This code is pretty awful in hindsight, but it gets the job done.
-        val cmShiftX: Double = prevCenterOfMass.x - getCenterOfMassInShipSpace().x()
-        val cmShiftY: Double = prevCenterOfMass.y - getCenterOfMassInShipSpace().y()
-        val cmShiftZ: Double = prevCenterOfMass.z - getCenterOfMassInShipSpace().z()
-        val rx: Double = x - getCenterOfMassInShipSpace().x()
-        val ry: Double = y - getCenterOfMassInShipSpace().y()
-        val rz: Double = z - getCenterOfMassInShipSpace().z()
+        val cmShiftX: Double = prevCenterOfMass.x - centerOfMassInShipSpace.x()
+        val cmShiftY: Double = prevCenterOfMass.y - centerOfMassInShipSpace.y()
+        val cmShiftZ: Double = prevCenterOfMass.z - centerOfMassInShipSpace.z()
+        val rx: Double = x - centerOfMassInShipSpace.x()
+        val ry: Double = y - centerOfMassInShipSpace.y()
+        val rz: Double = z - centerOfMassInShipSpace.z()
         gameMoITensor[0] = gameMoITensor[0] + (cmShiftY * cmShiftY + cmShiftZ * cmShiftZ) * gameTickMass +
             (ry * ry + rz * rz) * addedMass
         gameMoITensor[1] = gameMoITensor[1] - cmShiftX * cmShiftY * gameTickMass - rx * ry * addedMass
@@ -81,24 +79,10 @@ data class ShipInertiaData(
 
         // Do this to avoid a mass of zero, which runs the risk of dividing by zero and
         // crashing the program.
-        if (getShipMass() + addedMass > EPSILON) {
+        if (shipMass + addedMass > EPSILON) {
             shipMass += addedMass
         }
     }
-
-    // region Getters
-    fun getCenterOfMassInShipSpace(): Vector3dc {
-        return centerOfMassInShipSpace
-    }
-
-    fun getShipMass(): Double {
-        return shipMass
-    }
-
-    fun getMomentOfInertiaTensor(): Matrix3dc {
-        return momentOfInertiaTensor
-    }
-    // endregion
 
     companion object {
         internal fun newEmptyShipInertiaData(): ShipInertiaData {

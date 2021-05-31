@@ -7,27 +7,36 @@ import org.joml.Vector3ic
 import org.valkyrienskies.core.chunk_tracking.ChunkUnwatchTask
 import org.valkyrienskies.core.chunk_tracking.ChunkWatchTask
 import org.valkyrienskies.core.game.ChunkAllocator
-import org.valkyrienskies.core.game.IPlayer
+import org.valkyrienskies.core.game.ShipId
+import org.valkyrienskies.core.game.bridge.IPlayer
+import org.valkyrienskies.core.game.ships.networking.ShipObjectNetworkManagerServer
 import org.valkyrienskies.core.util.names.NounListNameGenerator
 import java.util.Collections
 import java.util.Spliterator
 import java.util.TreeSet
-import java.util.UUID
 
 class ShipObjectServerWorld(
     override val queryableShipData: MutableQueryableShipDataServer,
     val chunkAllocator: ChunkAllocator
 ) : ShipObjectWorld(queryableShipData) {
 
-    private var lastPlayersSet: Set<IPlayer> = setOf()
+    var lastPlayers: Set<IPlayer> = setOf()
+        private set
 
-    private val shipObjectMap = HashMap<UUID, ShipObjectServer>()
-    override val shipObjects: Map<UUID, ShipObjectServer> = shipObjectMap
+    private val shipObjectMap = HashMap<ShipId, ShipObjectServer>()
+    override val shipObjects: Map<ShipId, ShipObjectServer> = shipObjectMap
 
-    fun tickShips() {
+    private val networkManager = ShipObjectNetworkManagerServer(this)
+
+    /**
+     * Should be run on the physics thread
+     */
+    override fun tickShips() {
+        super.tickShips()
+        networkManager.tick()
         // For now, just make a [ShipObject] for every [ShipData]
         for (shipData in queryableShipData) {
-            val shipID = shipData.shipUUID
+            val shipID = shipData.id
             shipObjectMap.computeIfAbsent(shipID) { ShipObjectServer(shipData) }
         }
     }
@@ -44,7 +53,7 @@ class ShipObjectServerWorld(
             val shipDataManagingPos = queryableShipData.getShipDataFromChunkPos(chunkX, chunkZ)
             if (shipDataManagingPos != null) {
                 // Then check if there exists a ShipObject for this ShipData
-                val shipObjectManagingPos = shipObjects[shipDataManagingPos.shipUUID]
+                val shipObjectManagingPos = shipObjects[shipDataManagingPos.id]
                 if (shipObjectManagingPos != null) {
                     return shipObjectManagingPos.shipChunkTracker.getPlayersWatchingChunk(chunkX, chunkZ)
                 }
@@ -62,8 +71,8 @@ class ShipObjectServerWorld(
     fun tickShipChunkLoading(
         currentPlayers: Iterable<IPlayer>
     ): Pair<Spliterator<ChunkWatchTask>, Spliterator<ChunkUnwatchTask>> {
-        val removedPlayers = lastPlayersSet - currentPlayers
-        lastPlayersSet = currentPlayers.toHashSet()
+        val removedPlayers = lastPlayers - currentPlayers
+        lastPlayers = currentPlayers.toHashSet()
 
         val chunkWatchTasksSorted = TreeSet<ChunkWatchTask>()
         val chunkUnwatchTasksSorted = TreeSet<ChunkUnwatchTask>()

@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
 import org.joml.Vector3d
 import org.joml.Vector3dc
-import org.valkyrienskies.core.game.IPlayer
+import org.valkyrienskies.core.game.bridge.IPlayer
 import org.valkyrienskies.core.game.ships.ShipTransform
 import kotlin.math.min
 

@@ -4,11 +4,12 @@ import io.netty.buffer.ByteBuf
 
 class DeltaEncodedChannelClientTCP<T>(
     private val algorithm: DeltaAlgorithm<T>,
-    initialSnapshot: T
+    initialSnapshot: T? = null
 ) {
-    var latestSnapshot = initialSnapshot
-        private set
+
+    var latestSnapshot: T? = initialSnapshot
 
     fun decode(data: ByteBuf): T {
+        return algorithm.apply(latestSnapshot!!, data).also { latestSnapshot = it }
     }
 }

@@ -12,7 +12,7 @@ version = "1.0"
 
 repositories {
     mavenCentral()
-    maven { setUrl("https://dl.bintray.com/kotlin/kotlin-eap") }
+    maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
 }
 
 dependencies {
@@ -22,10 +22,13 @@ dependencies {
 
     // Kotlin
     implementation(kotlin("stdlib-jdk8"))
-
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+    
     // Bullet for Physics
     implementation("com.badlogicgames.gdx:gdx-bullet:$gdxVersion")
     implementation("com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop")
+
+    implementation("org.roaringbitmap:RoaringBitmap:0.9.3")
 
     // JOML for Math
     api("org.joml:joml:1.10.0")
@@ -79,9 +82,11 @@ ktlint {
 tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.freeCompilerArgs = listOf("-Xinline-classes")
     }
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.freeCompilerArgs = listOf("-Xinline-classes")
     }
     compileJava {
         sourceCompatibility = "1.8"

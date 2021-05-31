@@ -8,6 +8,16 @@ import org.valkyrienskies.core.chunk_tracking.IShipActiveChunksSet.Companion.lon
 class ShipActiveChunksSet private constructor(
     private val chunkClaimSet: LongOpenHashSet
 ) : IShipActiveChunksSet {
+
+    override fun clear() {
+        chunkClaimSet.clear()
+    }
+
+    override fun setFrom(other: IShipActiveChunksSet) {
+        chunkClaimSet.clear()
+        other.iterateChunkPos { x, z -> addChunkPos(x, z) }
+    }
+
     override fun addChunkPos(chunkX: Int, chunkZ: Int): Boolean {
         return chunkClaimSet.add(chunkPosToLong(chunkX, chunkZ))
     }

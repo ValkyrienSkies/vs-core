@@ -1,16 +1,36 @@
 package org.valkyrienskies.core.game.ships
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.plus
+import org.valkyrienskies.core.game.ShipId
 import org.valkyrienskies.core.game.VSBlockType
-import java.util.UUID
+import org.valkyrienskies.core.util.coroutines.TickableCoroutineDispatcher
 
 /**
  * Manages all the [ShipObject]s in a world.
  */
 abstract class ShipObjectWorld(
-    open val queryableShipData: QueryableShipDataClient,
+    open val queryableShipData: QueryableShipDataCommon,
 ) {
 
-    abstract val shipObjects: Map<UUID, ShipObject>
+    private val _dispatcher = TickableCoroutineDispatcher()
+
+    val dispatcher: CoroutineDispatcher = _dispatcher
+    val coroutineScope = MainScope() + _dispatcher
+
+    abstract val shipObjects: Map<ShipId, ShipObject>
+
+    var tickNumber = 0
+        private set
+    
+    /**
+     * Should be run on the physics thread
+     */
+    open fun tickShips() {
+        _dispatcher.tick()
+        tickNumber++
+    }
 
     fun onSetBlock(
         posX: Int,

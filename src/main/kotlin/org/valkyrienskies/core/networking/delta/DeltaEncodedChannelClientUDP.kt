@@ -8,7 +8,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap
  *
  * [T] is the type of object being delta-encoded
  */
-class DeltaEncodedChannelClient<T>(
+class DeltaEncodedChannelClientUDP<T>(
     private val algorithm: DeltaAlgorithm<T>,
     initialSnapshot: T
 ) {
@@ -17,8 +17,6 @@ class DeltaEncodedChannelClient<T>(
      * Contains the snapshot index -> delta
      */
     private val history = Int2ObjectRBTreeMap<T>()
-    var latestIndex = Int.MIN_VALUE
-        private set
     var latestSnapshot = initialSnapshot
         private set
 
@@ -27,6 +25,8 @@ class DeltaEncodedChannelClient<T>(
     }
 
     /**
+     * Takes [newIndex], [oldIndex], and [delta] and produces a snapshot.
+     *
      * [newIndex] is the index of this snapshot
      * [oldIndex] is the index of the snapshot this delta is encoded relative to
      */
@@ -36,7 +36,6 @@ class DeltaEncodedChannelClient<T>(
 
         history.put(newIndex, newSnapshot)
         latestSnapshot = newSnapshot
-        latestIndex = newIndex
         pruneOldSnapshots(oldIndex)
 
         return newSnapshot

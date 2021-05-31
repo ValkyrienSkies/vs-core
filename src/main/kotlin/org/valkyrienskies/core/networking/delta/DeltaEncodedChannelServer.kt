@@ -1,7 +1,7 @@
 package org.valkyrienskies.core.networking.delta
 
 import io.netty.buffer.ByteBuf
-import it.unimi.dsi.fastutil.shorts.Short2ObjectRBTreeMap
+import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap
 import org.valkyrienskies.core.networking.channel.VSNetworkChannel
 
 /**
@@ -14,19 +14,21 @@ class DeltaEncodedChannelServer<T>(
     clients: Iterable<VSNetworkChannel>
 ) {
 
-    data class Snapshot<T>(val index: Short, val data: T)
+    data class Snapshot<T>(val index: Int, val data: T)
 
     /**
      * Contains the snapshot index -> snapshot
      */
-    private val history = Short2ObjectRBTreeMap<T>()
-
-    private val clients = clients.toHashSet()
+    private val history = Int2ObjectRBTreeMap<T>()
 
     /**
-     * Contains the client -> last acknowledged snapshot
+     * Contains the client -> last acknowledged snapshots
      */
     private val clientHistory = HashMap<VSNetworkChannel, Snapshot<T>>()
+
+    init {
+        //clients.forEach { clientHistory[it] = Snapshot(0) }
+    }
 
     fun receiveAck(client: VSNetworkChannel, idx: Int, dest: ByteBuf): ByteBuf {
         return dest
@@ -36,6 +38,6 @@ class DeltaEncodedChannelServer<T>(
         history.put(0, obj)
     }
 
-    fun encode() {
+    fun send(newSnapshot: T) {
     }
 }

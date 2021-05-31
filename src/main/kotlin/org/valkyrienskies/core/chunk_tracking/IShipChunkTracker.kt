@@ -1,6 +1,6 @@
 package org.valkyrienskies.core.chunk_tracking
 
-import org.valkyrienskies.core.game.IPlayer
+import org.valkyrienskies.core.game.bridge.IPlayer
 import org.valkyrienskies.core.game.ships.ShipTransform
 
 /**

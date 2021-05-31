@@ -8,9 +8,9 @@ import org.joml.primitives.AABBdc
 import org.valkyrienskies.core.chunk_tracking.IShipActiveChunksSet
 import org.valkyrienskies.core.chunk_tracking.ShipActiveChunksSet
 import org.valkyrienskies.core.game.ChunkClaim
+import org.valkyrienskies.core.game.GlobalData
+import org.valkyrienskies.core.game.ShipId
 import org.valkyrienskies.core.game.VSBlockType
-import org.valkyrienskies.core.util.serialization.VSPacketIgnore
-import java.util.UUID
 
 /**
  * The purpose of [ShipData] is to keep track of the state of a ship; it does not manage the behavior of a ship.
@@ -18,20 +18,23 @@ import java.util.UUID
  * See [ShipObject] to find the code that defines ship behavior (movement, player interactions, etc)
  */
 class ShipData(
-    shipUUID: UUID,
+    id: ShipId,
     name: String,
     chunkClaim: ChunkClaim,
     physicsData: ShipPhysicsData,
-    @VSPacketIgnore
+    @PacketIgnore
     private val inertiaData: ShipInertiaData,
     shipTransform: ShipTransform,
     prevTickShipTransform: ShipTransform,
-    shipAABB: AABBdc,
+    @PacketIgnore
+    var shipAABB: AABBdc,
     shipActiveChunksSet: IShipActiveChunksSet
-) : ShipDataCommon(
-    shipUUID, name, chunkClaim, physicsData, shipTransform, prevTickShipTransform,
-    shipAABB, shipActiveChunksSet
-) {
+) : ShipDataCommon(id, name, chunkClaim, physicsData, shipTransform, prevTickShipTransform, shipActiveChunksSet) {
+
+    override fun copy() = ShipData(
+        id, name, chunkClaim, physicsData, inertiaData,
+        shipTransform, prevTickShipTransform, shipAABB, shipActiveChunksSet
+    )
 
     override fun onSetBlock(
         posX: Int, posY: Int, posZ: Int, blockType: VSBlockType, oldBlockMass: Double, newBlockMass: Double
@@ -79,7 +82,7 @@ class ShipData(
             )
 
             return ShipData(
-                shipUUID = UUID.randomUUID(),
+                id = GlobalData.allocateShipId(),
                 name = name,
                 chunkClaim = chunkClaim,
                 physicsData = ShipPhysicsData.createEmpty(),

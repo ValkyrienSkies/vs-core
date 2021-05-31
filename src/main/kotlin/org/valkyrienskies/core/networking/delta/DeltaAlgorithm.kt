@@ -7,12 +7,12 @@ import io.netty.buffer.ByteBuf
  */
 interface DeltaAlgorithm<T> {
     /**
-     * Takes the [old] and the [new] and writes the delta to [dest], then returns it.
+     * Takes the [old] and the [new] and writes the size of the delta and the delta to [dest], then returns it.
      */
     fun encode(old: T, new: T, dest: ByteBuf): ByteBuf
 
     /**
-     * Takes the [old] and the [delta], generated from [encode], and produces the "new" T.
+     * Takes the [old] and the [delta] (with the size), generated from [encode], and produces the "new" T.
      * This method must not mutate [old].
      */
     fun apply(old: T, delta: ByteBuf): T

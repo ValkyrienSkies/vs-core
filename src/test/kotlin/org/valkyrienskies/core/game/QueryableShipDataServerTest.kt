@@ -24,7 +24,7 @@ internal class QueryableShipDataServerTest {
         val queryableShipData = QueryableShipDataImpl<ShipData>()
         val shipData = VSRandomUtils.randomShipData()
         queryableShipData.addShipData(shipData)
-        assertEquals(shipData, queryableShipData.getShipDataFromUUID(shipData.shipUUID))
+        assertEquals(shipData, queryableShipData.getShipDataFromUUID(shipData.id))
     }
 
     /**

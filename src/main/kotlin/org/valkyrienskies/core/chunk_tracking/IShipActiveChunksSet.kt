@@ -1,6 +1,8 @@
 package org.valkyrienskies.core.chunk_tracking
 
 interface IShipActiveChunksSet {
+    fun setFrom(other: IShipActiveChunksSet)
+    fun clear()
     fun addChunkPos(chunkX: Int, chunkZ: Int): Boolean
     fun removeChunkPos(chunkX: Int, chunkZ: Int): Boolean
     fun iterateChunkPos(func: (Int, Int) -> Unit)

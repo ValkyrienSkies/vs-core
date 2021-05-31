@@ -10,24 +10,10 @@ object VSJacksonUtil {
      * Returns the default mapper for the standard Valkyrien Skies configuration for serializing
      * things, particularly [org.valkyrienskies.core.game.ShipData]
      */
-    val defaultMapper = CBORMapper()
+    val defaultMapper = createDefaultMapper()
 
-    /**
-     * Returns the default mapper for Valkyrien Skies network transmissions (e.g., it ignores
-     * [org.valkyrienskies.core.util.serialization.VSPacketIgnore] annotated fields
-     */
-    @Suppress("WeakerAccess")
-    val packetMapper = CBORMapper()
-
-    init {
-        // Configure the mappers
-        configureMapper(defaultMapper)
-        configurePacketMapper(packetMapper)
-    }
-
-    private fun configurePacketMapper(mapper: ObjectMapper) {
-        configureMapper(mapper)
-        mapper.setAnnotationIntrospector(VSAnnotationIntrospector)
+    fun createDefaultMapper(): ObjectMapper {
+        return configure(CBORMapper())
     }
 
     /**
@@ -36,9 +22,8 @@ object VSJacksonUtil {
      *
      * @param mapper The ObjectMapper to configure
      */
-    private fun configureMapper(mapper: ObjectMapper) {
-        mapper
-            .registerModule(JOMLSerializationModule())
+    private fun configure(mapper: ObjectMapper): ObjectMapper {
+        return mapper.registerModule(JOMLSerializationModule())
             .registerModule(VSSerializationModule())
             .setVisibility(
                 mapper.visibilityChecker
@@ -47,7 +32,7 @@ object VSJacksonUtil {
                     .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
                     .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
             )
-        // Serialize Kotlin data types
-        mapper.registerKotlinModule()
+            // Serialize Kotlin data types
+            .registerKotlinModule()
     }
 }

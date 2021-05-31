@@ -180,7 +180,7 @@ internal object VSRandomUtils {
     @Suppress("WeakerAccess")
     fun randomShipData(random: Random = defaultRandom): ShipData {
         return ShipData(
-            shipUUID = UUID.randomUUID(),
+            id = UUID.randomUUID(),
             name = randomString(random, random.nextInt(10)),
             chunkClaim = randomChunkClaim(random),
             physicsData = randomShipPhysicsData(random),

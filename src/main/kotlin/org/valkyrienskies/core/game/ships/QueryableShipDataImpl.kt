@@ -3,17 +3,17 @@ package org.valkyrienskies.core.game.ships
 import org.joml.primitives.AABBd
 import org.joml.primitives.AABBdc
 import org.valkyrienskies.core.datastructures.ChunkClaimMap
-import java.util.UUID
+import org.valkyrienskies.core.game.ShipId
 
 typealias QueryableShipDataServer = QueryableShipData<ShipData>
-typealias QueryableShipDataClient = QueryableShipData<ShipDataCommon>
+typealias QueryableShipDataCommon = QueryableShipData<ShipDataCommon>
 typealias MutableQueryableShipDataServer = MutableQueryableShipData<ShipData>
-typealias MutableQueryableShipDataClient = MutableQueryableShipData<ShipDataCommon>
+typealias MutableQueryableShipDataCommon = MutableQueryableShipData<ShipDataCommon>
 
 interface QueryableShipData<out ShipDataType : ShipDataCommon> : Iterable<ShipDataType> {
-    val uuidToShipData: Map<UUID, ShipDataType>
+    val uuidToShipData: Map<ShipId, ShipDataType>
     override fun iterator(): Iterator<ShipDataType>
-    fun getShipDataFromUUID(uuid: UUID): ShipDataType?
+    fun getShipDataFromUUID(uuid: ShipId): ShipDataType?
     fun getShipDataFromChunkPos(chunkX: Int, chunkZ: Int): ShipDataType?
     fun getShipDataIntersecting(aabb: AABBdc): Iterator<ShipDataType>
 }
@@ -21,15 +21,16 @@ interface QueryableShipData<out ShipDataType : ShipDataCommon> : Iterable<ShipDa
 interface MutableQueryableShipData<ShipDataType : ShipDataCommon> : QueryableShipData<ShipDataType> {
     fun addShipData(shipData: ShipDataType)
     fun removeShipData(shipData: ShipDataType)
+    fun removeShipData(id: ShipId)
 }
 
 open class QueryableShipDataImpl<ShipDataType : ShipDataCommon>(
     data: Iterable<ShipDataType> = emptyList()
 ) : MutableQueryableShipData<ShipDataType> {
 
-    val _uuidToShipData: HashMap<UUID, ShipDataType> = HashMap()
-    override val uuidToShipData: Map<UUID, ShipDataType> = _uuidToShipData
-    val chunkClaimToShipData: ChunkClaimMap<ShipDataType> = ChunkClaimMap()
+    private val _uuidToShipData: HashMap<ShipId, ShipDataType> = HashMap()
+    override val uuidToShipData: Map<ShipId, ShipDataType> = _uuidToShipData
+    private val chunkClaimToShipData: ChunkClaimMap<ShipDataType> = ChunkClaimMap()
 
     init {
         data.forEach(::addShipData)
@@ -39,7 +40,7 @@ open class QueryableShipDataImpl<ShipDataType : ShipDataCommon>(
         return _uuidToShipData.values.iterator()
     }
 
-    override fun getShipDataFromUUID(uuid: UUID): ShipDataType? {
+    override fun getShipDataFromUUID(uuid: ShipId): ShipDataType? {
         return _uuidToShipData[uuid]
     }
 
@@ -48,18 +49,22 @@ open class QueryableShipDataImpl<ShipDataType : ShipDataCommon>(
     }
 
     override fun addShipData(shipData: ShipDataType) {
-        if (getShipDataFromUUID(shipData.shipUUID) != null) {
+        if (getShipDataFromUUID(shipData.id) != null) {
             throw IllegalArgumentException("Adding shipData $shipData failed because of duplicated UUID.")
         }
-        _uuidToShipData[shipData.shipUUID] = shipData
+        _uuidToShipData[shipData.id] = shipData
         chunkClaimToShipData.set(shipData.chunkClaim, shipData)
     }
 
+    override fun removeShipData(id: ShipId) {
+        removeShipData(getShipDataFromUUID(id)!!)
+    }
+
     override fun removeShipData(shipData: ShipDataType) {
-        if (getShipDataFromUUID(shipData.shipUUID) == null) {
+        if (getShipDataFromUUID(shipData.id) == null) {
             throw IllegalArgumentException("Removing $shipData failed because it wasn't in the UUID map.")
         }
-        _uuidToShipData.remove(shipData.shipUUID)
+        _uuidToShipData.remove(shipData.id)
         chunkClaimToShipData.remove(shipData.chunkClaim)
     }
 
