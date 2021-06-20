@@ -34,12 +34,12 @@ class ShipObjectNetworkManagerClient(
         val numShips = buf.readInt()
 
         repeat(numShips) {
-            val shipId = buf.readLong()
             val size = buf.readInt()
             val shipDataJson = mapper.readTree(ByteBufInputStream(buf, size))
             val shipData = mapper.treeToValue<ShipDataCommon>(shipDataJson)!!
 
-            val shipObject = ShipObjectClient(shipData)
+            val shipObject = ShipObjectClient(shipData, shipDataJson)
+            parent.addShipObject(shipObject)
         }
     }
 

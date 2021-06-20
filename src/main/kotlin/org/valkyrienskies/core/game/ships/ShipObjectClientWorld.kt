@@ -12,9 +12,9 @@ class ShipObjectClientWorld(
 
     val networkManager = ShipObjectNetworkManagerClient(this)
 
-    fun addShipObject(data: ShipDataCommon) {
-        require(shipObjectMap.putIfAbsent(data.id, ShipObjectClient(data)) == null) { "Ship was already present" }
-        queryableShipData.addShipData(data)
+    fun addShipObject(obj: ShipObjectClient) {
+        require(shipObjectMap.putIfAbsent(obj.id, obj) == null) { "Ship was already present" }
+        queryableShipData.addShipData(obj.shipData)
     }
 
     fun removeShipObject(id: ShipId) {
@@ -24,10 +24,5 @@ class ShipObjectClientWorld(
 
     override fun tickShips() {
         super.tickShips()
-        // For now, just make a [ShipObject] for every [ShipData]
-        for (shipData in queryableShipData) {
-            val shipID = shipData.id
-            shipObjectMap.computeIfAbsent(shipID) { ShipObjectClient(shipData) }
-        }
     }
 }

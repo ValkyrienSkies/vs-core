@@ -9,6 +9,8 @@ package org.valkyrienskies.core.game.ships
 open class ShipObject(
     shipData: ShipDataCommon
 ) {
+    val id get() = shipData.id
+
     @Suppress("CanBePrimaryConstructorProperty") // don't want to refer to open val in constructor
     open val shipData: ShipDataCommon = shipData
 }

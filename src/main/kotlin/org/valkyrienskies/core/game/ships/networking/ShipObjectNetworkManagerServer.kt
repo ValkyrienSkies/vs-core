@@ -47,7 +47,6 @@ class ShipObjectNetworkManagerServer(
 
         shipsToTrack.forEach { ship ->
             require(ship.playersTracking.add(player)) { "Tracked already tracked player" }
-            buf.writeLong(ship.id)
             val data = VSJacksonUtil.defaultMapper.writeValueAsBytes(ship.shipData)
             buf.writeInt(data.size)
             buf.writeBytes(data)
